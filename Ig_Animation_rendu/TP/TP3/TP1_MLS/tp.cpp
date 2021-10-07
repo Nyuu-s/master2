@@ -260,99 +260,145 @@ void display () {
 void idle () {
     glutPostRedisplay ();
 }
-void calculCentroid(Vec3 &outPutCentroid, std::vector<Vec3> &points){
+// void calculCentroid(Vec3 &outPutCentroid, std::vector<Vec3> &points){
         
-        for(int i=0; i<points.size(); i++)
-        {
-            outPutCentroid += points[i];
-        }
+//         for(int i=0; i<points.size(); i++)
+//         {
+//             outPutCentroid += points[i];
+//         }
 
-        outPutCentroid = (1.0f/(float)points.size()) * outPutCentroid;
+//         outPutCentroid = (1.0f/(float)points.size()) * outPutCentroid;
+// }
+
+Vec3 calculCentroid(std::vector<Vec3> const& points)
+{
+    Vec3 m_point = { 0.0f, 0.0f, 0.0f };
+    double sum_weights = 0.0;
+
+    // mean of projected points
+    for (unsigned int ki = 0; ki < points.size(); ki++)
+    {
+        m_point += points[ki];
+    }
+    m_point /= points.size();
+
+
+    return m_point;
 }
 
-
-void ICP(   std::vector<Vec3>       & ps,   //positions
-            std::vector<Vec3> const & nps, //normals
-            std::vector<Vec3>       & qs,
+void ICP(   std::vector<Vec3>       & ps,   //positions2 (source, rouge)
+            std::vector<Vec3> const & nps, //normals2
+            std::vector<Vec3>       & qs, //positions (target, blanc)
             std::vector<Vec3> const & nqs,
             BasicANNkdTree const & qsKdTree, 
             Mat3 & rotation,
             Vec3 & translation, unsigned int nIterations)
             {
-                for(int a = 0; a<nIterations; a++){
-                    int e = 0.0;
-                    int i_coord = 0;
-                    int j_coord = 0;
-                    float somme = 0.0;
-                    Mat3 Q_transpose = Mat3();
-                    for(int i=0; i<9;i++){
-                        for(int j=0; j<qs.size();j++){
-                            somme += ps[j][i_coord] *    qs[qsKdTree.nearest(qs[j])][j_coord];
-                            if(i_coord % 3 == 0){
-                                j_coord++;
-                                i_coord = 0.0;
-                            }
-                            i_coord++;
-                        }
-                        std::cout << somme<< "\n";
-                        if(e % 3 == 0){
-                            e++;
-                             
-                        }
-                        Q_transpose(i,e) = somme;
-                        somme = 0.0;
-        
+                std::vector<std::vector<float>> horizontal_ps;
+                horizontal_ps.resize(3);
+                horizontal_ps[0].resize(ps.size());
+                horizontal_ps[1].resize(ps.size());
+                horizontal_ps[2].resize(ps.size());
+                
+                for(int index = 0; index <  ps.size(); index++){
+                    
+                    horizontal_ps[0][index] = ps[index][0];
+                    horizontal_ps[1][index] = ps[index][1];
+                    horizontal_ps[2][index] = ps[index][2];
+                }
+
+
+                Vec3 ct, cs;  
+                ct = calculCentroid(qs);
+
+                //for(int a = 0; a<nIterations; a++){
+ 
+                    Mat3 M_covariance = Mat3();
+  
+                    cs =  calculCentroid(ps);
+                   
+                    std::vector<int> indices_proches;
+                    indices_proches.resize(ps.size());
+                    for (int i = 0; i < ps.size(); i++)
+                    {
+                        indices_proches[i]= qsKdTree.nearest(ps[i]);
                     }
+                    
+
+
+                    // for(int i = 0; i< 3; i++){
+                    //     for(int j = 0; j < 3; j++){
+                    //         for(int k = 0; k < ps.size(); k++){
+                    //             int indice_proche = indices_proches[k];
+                    //             M_covariance(i,j) +=    (horizontal_ps[j][k] - cs[j])* (qs[indice_proche][j] - ct[j]);
+                                
+                    //         }
+                           
+                    //     }
+                    // }
+                    
+                    for (int i = 0; i < ps.size(); i++)
+                    {
+                        int k = qsKdTree.nearest(ps[k]);
+                        M_covariance(0,0) = M_covariance(0,0) + (ps[i][0] - cs[0]) *(qs[k][0]- ct[0]);
+                        M_covariance(0,1) = M_covariance(0,1) + (ps[i][0] - cs[0]) *(qs[k][1] - ct[1]); 
+                        M_covariance(0,2) = M_covariance(0,2) + (ps[i][0] - cs[0])* (qs[k][2] - ct[2]);
+                        M_covariance(1,0) = M_covariance(1,0) + (ps[i][1] - cs[1])* (qs[k][0] - ct[0]);
+                        M_covariance(1,1) = M_covariance(1,1) + (ps[i][1] - cs[1])* (qs[k][1] - ct[1]);
+                        M_covariance(1,2) = M_covariance(1,2) + (ps[i][1] - cs[1])* (qs[k][2] - ct[2]);
+                        M_covariance(2,0) = M_covariance(2,0) + (ps[i][2] - cs[2])* (qs[k][0] - ct[0]);
+                        M_covariance(2,1) = M_covariance(2,1) + (ps[i][2] - cs[2])* (qs[k][1] - ct[1]);
+                        M_covariance(2,2) = M_covariance(2,2) + (ps[i][2] - cs[2])* (qs[k][2] - ct[2]);
+                    }
+                    
+                           
+
+
+                   // int e = 0.0;
+                    // int i_coord = 0;
+                    // int j_coord = 0;
+                    // float somme = 0.0;
+                    // for(int i=0; i<9;i++){
+                    //     for(int j=0; j<qs.size();j++){
+                    //         somme += ps[j][i_coord] *    qs[qsKdTree.nearest(qs[j])][j_coord];
+                    //         if(i_coord % 3 == 0){
+                    //             j_coord++;
+                    //             i_coord = 0.0;
+                    //         }
+                    //         i_coord++;
+                    //     }
+                    //     std::cout << somme<< "\n";
+                    //     if(e % 3 == 0){
+                    //         e++;
+                             
+                    //     }
+                    //     Q_transpose(i,e) = somme;
+                    //     somme = 0.0;
+        
+                    // }
 
                     Mat3 U = Mat3();
                    
                     Mat3 V = Mat3();
                     float sx, sy,sz;
-                    Q_transpose.SVD(U,sx,sy,sz, V);
-                    U.transpose();
-                    V.transpose();
+                    M_covariance.SVD(U,sx,sy,sz, V);
 
-                    Mat3 R = U*V;
-                    Vec3 ct, cs;
-                    calculCentroid(ct, qs);
-                    calculCentroid(cs, ps);
+                    U.getTranspose();
+                    V.getTranspose();
+
+                    rotation = V*U;
 
                     for(int b = 0; b<ps.size();b++){
-                        ps[b] = ct + R * (ps[b] - cs);
+                        ps[b] = ct + rotation * (ps[b] - cs);
                     }
                    
-                }
+               // }
 
           
 
             }
 
-void key (unsigned char keyPressed, int x, int y) {
-    switch (keyPressed) {
-    case 'f':
-        if (fullScreen == true) {
-            glutReshapeWindow (SCREENWIDTH, SCREENHEIGHT);
-            fullScreen = false;
-        } else {
-            glutFullScreen ();
-            fullScreen = true;
-        }
-        break;
 
-    case 'w':
-        GLint polygonMode[2];
-        glGetIntegerv(GL_POLYGON_MODE, polygonMode);
-        if(polygonMode[0] != GL_FILL)
-            glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-        else
-            glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
-        break;
-    case 'm': ICP(positions, normals, positions2, normals2, kdtree, rotation, translation, 1);break;
-    default:
-        break;
-    }
-    idle ();
-}
 
 void mouse (int button, int state, int x, int y) {
     if (state == GLUT_UP) {
@@ -453,7 +499,58 @@ int kernel_type, unsigned int nbIterations = 1 , unsigned int knn = 10 ) {
 }
 
 
+void reset(){
 
+    
+        
+        kdtree.build(positions);
+       
+        positions2 = positions;
+        normals2 = normals ;
+        srand(time(0));
+        
+        Mat3 ICProtation = Mat3::RandRotation();
+        Vec3 ICPtranslation = Vec3( -1.0 + 2.0 *(( double )( rand ( ) ) / (double )(RAND_MAX)) , -1.0 + 2.0 *(( double )( rand ( ) ) / (double )(RAND_MAX)) , -1.0 + 2.0 *(( double )( rand ( ) ) / (double )(RAND_MAX)) ) ;
+        for ( unsigned int pIt = 0 ; pIt < positions2.size(); ++pIt ) {
+            positions2[pIt] = ICProtation *positions2[pIt] + ICPtranslation;
+            normals2[ pIt ] = ICProtation *normals2[pIt] ;
+        }
+
+    
+}
+
+void key (unsigned char keyPressed, int x, int y) {
+    switch (keyPressed) {
+    case 'f':
+        if (fullScreen == true) {
+            glutReshapeWindow (SCREENWIDTH, SCREENHEIGHT);
+            fullScreen = false;
+        } else {
+            glutFullScreen ();
+            fullScreen = true;
+        }
+        break;
+
+    case 'w':
+        GLint polygonMode[2];
+        glGetIntegerv(GL_POLYGON_MODE, polygonMode);
+        if(polygonMode[0] != GL_FILL)
+            glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+        else
+            glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+        break;
+    case 'm': ICP(positions2, normals2, positions, normals, kdtree, rotation, translation, 1);break;
+    case 'l': reset();break;
+    default:
+        break;
+    }
+    idle ();
+}
+
+
+// USE M TO ITERATE 1 MORE TIME WITH ICP
+
+// USE L TO RESET POINST TO SOME RANDOM SHIFTS
 
 int main (int argc, char ** argv) {
     if (argc > 2) {
@@ -472,26 +569,12 @@ int main (int argc, char ** argv) {
     glutMotionFunc (motion);
     glutMouseFunc (mouse);
     key ('?', 0, 0);
+    // Load a first pointset, and build a kd-tree:
+        loadPN("pointsets/dino_subsampled_extreme.pn" , positions , normals);
+        loadPN("pointsets/dino_subsampled_extreme.pn" , positions2 , normals2);
 
-
-    {
-        // Load a first pointset, and build a kd-tree:
-        loadPN("pointsets/dino.pn" , positions , normals);
-        loadPN("pointsets/dino2.pn" , positions2 , normals2);
-        
-        kdtree.build(positions);
+    reset();
        
-        positions2 = positions;
-        normals2 = normals ;
-        srand(time(0));
-        
-        Mat3 ICProtation = Mat3::RandRotation();
-        Vec3 ICPtranslation = Vec3( -1.0 + 2.0 *(( double )( rand ( ) ) / (double )(RAND_MAX)) , -1.0 + 2.0 *(( double )( rand ( ) ) / (double )(RAND_MAX)) , -1.0 + 2.0 *(( double )( rand ( ) ) / (double )(RAND_MAX)) ) ;
-        for ( unsigned int pIt = 0 ; pIt < positions2.size(); ++pIt ) {
-            positions2[pIt] = ICProtation *positions2[pIt] + ICPtranslation ;
-            normals2[ pIt ] = ICProtation *normals2[pIt] ;
-        }
-
         // Vec3 centroideQs(0.0,0.0,0.0);
         // Vec3 centroidePs(0.0,0.0,0.0);
         // calculCentroid(centroideQs, positions);
@@ -509,9 +592,24 @@ int main (int argc, char ** argv) {
         // {
         //     positions2[i] -= centroidePs;
         // }
-   
+        // Vec3 cs, ct;
+        // calculCentroid(ct, positions);
+        // calculCentroid(cs, positions2);
 
-        ICP(positions, normals, positions2, normals2, kdtree, rotation, translation, 0);
+        // for (auto vec : positions)
+        // {
+        //     vec -= cs;   
+        // }
+
+        
+        // for (auto vec : positions2)
+        // {
+        //     vec -= ct;   
+        // }
+        
+        
+
+       // ICP(positions2, normals2, positions, normals, kdtree, rotation, translation, 0);
 
 
 
@@ -542,7 +640,7 @@ int main (int argc, char ** argv) {
     
 
         
-    }
+    
 
 
 
