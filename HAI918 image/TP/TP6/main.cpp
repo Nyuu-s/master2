@@ -102,7 +102,6 @@ void parcoursKmeanMoyenne() {
         }
     }
 }
-
 double calcEQM(){
 
 	double eqm_r = 0;
