@@ -122,22 +122,14 @@ int wavelet(ImageBase &imageIn, ImageBase &imageOut, int iterationMax, int it, f
 
 		if(it > iterationMax){
 			imageOut.copy(imageIn);
-			
 			return it;
 		}
 
-		
 		//std::cout << it << "\n";
 		int width = imageIn.getWidth();
 		int height = imageIn.getHeight();
 		int width_by2 = imageIn.getWidth()/2;
 		int height_by2 = imageIn.getHeight()/2; 
-
-	
-	//p1+p2+p3+4 / 4 upperleft
-	//p1-p2+p3-p4 / 2 upperright
-	//p1+p2-p3-p4 /2 lowerleft
-	//p1-p2-p3+p4 lowerright
 		
 		ImageBase imgUpperLeft(height_by2, width_by2, imageIn.getColor());
 		ImageBase imgToComplete(imageIn.getHeight(), imageIn.getWidth(), imageIn.getColor());
@@ -149,31 +141,22 @@ int wavelet(ImageBase &imageIn, ImageBase &imageOut, int iterationMax, int it, f
 				int p3 = imageIn[i+1][j];
 				int p4 = imageIn[i+1][j+1];
 				int t;
-				
 				imgUpperLeft[i/2][j/2] = (p1+p2+p3+p4)/4 ; //upper left
-
 
 				t = (fmax((p1+p2-p3-p4)/(Q/2), -128)) +128;
 				imgToComplete[height_by2 + (i/2)][j/2] = t; //lower left
 
-
-				
 				t = (fmax((p1-p2+p3-p4)/(Q/2), -128)) +128;
 				imgToComplete[i/2][width_by2 + (j/2)] = t; // upper right
 
-
-
-
 				//t = (((p1-p2-p3+p4) + 512) /1024.0) *256;
-
 				t = (fmax((p1-p2-p3+p4)/Q, -128) +128);
 				imgToComplete[height_by2 + (i/2)][width_by2 + (j/2)] = t;//lower right
 			}
 		}
 
 	ImageBase imgTempOutput(imageIn.getHeight(), imageIn.getWidth(), imageIn.getColor());
-
-	wavelet(imgUpperLeft,imgTempOutput,iterationMax, ++it, Q-iterationMax);
+	wavelet(imgUpperLeft,imgTempOutput,iterationMax, ++it, Q/2);
 
 	for (int i = 0; i < imgTempOutput.getHeight(); i++)
 	{
@@ -190,6 +173,14 @@ int wavelet(ImageBase &imageIn, ImageBase &imageOut, int iterationMax, int it, f
 }
 
 int unQuantization(ImageBase &imageIn, ImageBase &imageOut, int iterationMax, int it, float Q){
+	
+	//std::cout << it << "\n";
+	int width = imageIn.getWidth();
+	int height = imageIn.getHeight();
+	int width_by2 = imageIn.getWidth()/2;
+	int height_by2 = imageIn.getHeight()/2; 
+	
+	ImageBase recomposed(height, width, false);
 	if(it > iterationMax){
 			imageOut.copy(imageIn);
 			
@@ -197,11 +188,6 @@ int unQuantization(ImageBase &imageIn, ImageBase &imageOut, int iterationMax, in
 		}
 
 		
-		//std::cout << it << "\n";
-		int width = imageIn.getWidth();
-		int height = imageIn.getHeight();
-		int width_by2 = imageIn.getWidth()/2;
-		int height_by2 = imageIn.getHeight()/2; 
 
 	
 	//p1+p2+p3+4 / 4 upperleft
@@ -218,46 +204,54 @@ int unQuantization(ImageBase &imageIn, ImageBase &imageOut, int iterationMax, in
 				int p2 = imageIn[i][j+1];
 				int p3 = imageIn[i+1][j];
 				int p4 = imageIn[i+1][j+1];
-				int t;
+				int a, b ,c ,d;
 				
-				imgUpperLeft[i/2][j/2] = imageIn[i/2][j/2]; //upper left
-
-
-				t = imageIn[height_by2 + (i/2)][j/2] * (Q/2);
-				t = t;
-
+				a = imageIn[i/2][j/2];
+				imgUpperLeft[i/2][j/2] = a; //upper left
 				
-				std::cout << t << std::endl;
-				imgToComplete[height_by2 + (i/2)][j/2] = t = fmax(t, -127) +128;; //lower left
+
+				b = imageIn[height_by2 + (i/2)][j/2] * (Q/2);
+			    b = fmax(b, -127) +128;; //lower left
 
 
 				
-				t = imageIn[i/2][width_by2 + (j/2)] *  (Q / 2);
-				imgToComplete[i/2][width_by2 + (j/2)] = fmax(-128, t) + 128; // upper right
+				c = imageIn[i/2][width_by2 + (j/2)] *  (Q / 2);
+				c = fmax(-128, c) + 128; // upper right
 
 
 
 
 				//t = (((p1-p2-p3+p4) + 512) /1024.0) *256;
 
-				t = imageIn[height_by2 + (i/2)][width_by2 + (j/2)] * Q;
-				imgToComplete[height_by2 + (i/2)][width_by2 + (j/2)] = fmax(t, -128) +128 ;//lower right
+				d = imageIn[height_by2 + (i/2)][width_by2 + (j/2)] * Q;
+				d = fmax(d, -128) +128 ;//lower right
+
+				recomposed[i][j] 	= (a + (b/2) + (c/2) + (d/4));
+				recomposed[i][j+1] 	= (a + (b/2) - (c/2) - (d/4));
+				recomposed[i+1][j]	= (a - (b/2) + (c/2) - (d/4) );
+				recomposed[i+1][j+1]= (a - (b/2) - (c/2) + (d/4) );
+
+
+				
 			}
 		}
 
+	
 	ImageBase imgTempOutput(imageIn.getHeight(), imageIn.getWidth(), imageIn.getColor());
 
 	unQuantization(imgUpperLeft,imgTempOutput,iterationMax, ++it, Q/2);
 
-	for (int i = 0; i < imgTempOutput.getHeight(); i++)
-	{
-		for (int j = 0; j < imgTempOutput.getWidth(); j++)
-		{
-			imgToComplete[i][j] = imgTempOutput[i][j];	
-		}
-	}
+	// for (int i = 0; i < imgTempOutput.getHeight(); i++)
+	// {
+	// 	for (int j = 0; j < imgTempOutput.getWidth(); j++)
+	// 	{
+	// 		imgToComplete[i][j] = imgTempOutput[i][j];	
+	// 	}
+	// }
+
+	//imgToComplete.copy(recomposed);
 	
-	imageOut.copy(imgToComplete);
+	imageOut.copy(recomposed);
 		
 	return it;
 }
@@ -314,16 +308,18 @@ int main(int argc, char **argv)
 
 	int iteationMax = 4;
 	int n = 1;
-	int Q = 16;
+	int Q = 34;
 
 	wavelet(Y,  t1 , iteationMax, n, Q);
 	unQuantization(t1, Y, iteationMax ,n, Q);
 	std::cout << "Finished wavelet of Y ... \n";
-	Q = 18;
+	Q = 66;
 	wavelet(Cr, t2 , iteationMax, n, Q);
+	unQuantization(t2, Cr, iteationMax ,n, Q);
 
 	std::cout << "Finished wavelet of Cr ... \n";
 	wavelet(Cb, t3 , iteationMax, n, Q);
+	unQuantization(t3, Cb, iteationMax ,n, Q);
 
 	std::cout << "Finished wavelet of Cb ... \n";
 
@@ -348,7 +344,7 @@ int main(int argc, char **argv)
 		
 	}
 	
-
+	std::cout << calcPSNR(imIn, imYCrCb) << "\n";
 	imYCrCb.save(cNomImgEcrite);
 	
 
