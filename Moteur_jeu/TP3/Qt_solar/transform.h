@@ -12,7 +12,7 @@ class Transform
 
 public:
     Transform();
-    Transform(QMatrix4x4 matrix, QQuaternion rotate, QVector3D trans);
+    Transform(QMatrix4x4 matrix, QQuaternion rotate, QVector3D trans, float s);
 
     //fields
     QMatrix4x4 matrix;
