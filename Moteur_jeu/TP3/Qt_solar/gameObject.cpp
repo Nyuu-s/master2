@@ -5,9 +5,9 @@ gameObject::gameObject()
 
 }
 
-gameObject::gameObject(QMatrix4x4 m, QQuaternion r, QVector3D t)
+gameObject::gameObject(QMatrix4x4 m, QQuaternion r, QVector3D t, float s)
 {
-    transform = Transform(m, r, t);
+    transform = Transform(m, r, t, s);
 }
 
 

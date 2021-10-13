@@ -137,15 +137,15 @@ void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSi
 //        }
 
   //  }
-    float plan_xmax = boardSizeX;
-    float plan_xmin = -boardSizeX;
-    float plan_ymax = boardSizeY;
-    float plan_ymin = -boardSizeY;
-    float tex_xStep=2/(float)(nW-1);
-    float tex_yStep=2/(float)(nH-1);
+    float plan_xmax = boardSizeX;   //---
+    float plan_xmin = -boardSizeX;  // taille réel du plan
+    float plan_ymax = boardSizeY;   //
+    float plan_ymin = -boardSizeY;  //--
+    float tex_xStep=2/(float)(nW-1);    // interval pour les textures
+    float tex_yStep=2/(float)(nH-1);    //--
 
-    float xStep=(plan_xmax-plan_xmin)/(float)(nW-1);
-    float yStep=(plan_ymax-plan_ymin)/(float)(nH-1);
+    float xStep=(plan_xmax-plan_xmin)/(float)(nW-1); // interval pour la géométrie (triangles)
+    float yStep=(plan_ymax-plan_ymin)/(float)(nH-1); //--
     srand (static_cast <unsigned> (time(0)));
 
     int k=0;
@@ -156,12 +156,12 @@ void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSi
     VertexData vertices[vertexNumber];
     for(int i=0; i<nH; i++){
          for(int j=0;j<nW; j++){
-             QRgb test = heightmap.pixel(  j, i);
+             //QRgb test = heightmap.pixel(  j, i);  
 
           //   qDebug("%d", qGray(test) );
-            float r = static_cast <float>  (qGray(test))/ 255.0;
+          //  float r = static_cast <float>  (qGray(test))/ 255.0; r est de base le z qu'il demande de denifir de maniere random quelque part
            // qDebug("%f", r );
-             vertices[k++]= {QVector3D(
+             vertices[k++]= {QVector3D(                     // ajout des sommets et coord de texture pour la subdivision
                                     plan_xmin + xStep * i,
                                     plan_ymin + yStep * j,
                                     0.0),
@@ -176,14 +176,14 @@ void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSi
 
 
 
-    unsigned int indexCount = nW*(nH-1)*2 + 2*(nH-1); //nH*nW+nH*(nW-2)+2*(nW-2)+2;//nH*nW + (nH-2) * nW + (nH-2) * 2;//((nH-1)*(nW*2))+(nH-2)*2;//
+    unsigned int indexCount = nW*(nH-1)*2 + 2*(nH-1); // calcul du nombre d'index, utilisant le triangle strip des sommet vont se repeter il ne fau pas les compter 40 fois
     GLushort indices[indexCount];
 
     //index buffer
     int e=0;
     for(int i=0; i<nH-1; i++){
          for(int j=0;j<nW; j++){
-             //stripe
+             //stripe 
                  indices[e++] = i*nH+j;
                  indices[e++] = (i+1)*nH+j;
 
