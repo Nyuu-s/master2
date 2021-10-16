@@ -2,65 +2,69 @@
 
 Transform::Transform()
 {
-
+    matrix = QMatrix4x4();
 }
 
-Transform::Transform(QMatrix4x4 m, QQuaternion r, QVector3D trans, float s)
+Transform::Transform( QQuaternion r, QVector3D trans, float s)
     :
-        matrix(m),
         scale(s),
         rotate(r),
         translate(trans)
 
-{}
+{
+    matrix = (QMatrix4x4(rotate.toRotationMatrix()) * scale);
+    matrix(0,3) = translate.x();
+    matrix(0,3) = translate.y();
+    matrix(0,3) = translate.z();
+    matrix(0,3) = 1;
+
+}
+
+
+
 
 
 QVector3D Transform::applyToPoint(QVector3D p)
 {
-    return ( matrix * p + translate);
+    return ( rotate.rotatedVector(p) + translate) * scale;
 }
 
 QVector3D Transform::applyToVector(QVector3D v)
 {
-    return ( matrix * v );
+    return ( rotate.rotatedVector(v) * scale );
+}
+
+QVector3D Transform::applyToVersor(QVector3D v)
+{
+    return ( rotate.rotatedVector(v) );
 }
 
 QVector4D Transform::apply(QVector4D p){
-    QMatrix4x4 e = QMatrix4x4();
 
-    QMatrix3x3 r = rotate.toRotationMatrix();
-    e(0,0) = r(0,0);
-    e(0,1) = r(0,1);
-    e(0,2) = r(0,2);
-    e(0,3) = 0.0f;
+//    QMatrix4x4 e = QMatrix4x4(rotate.toRotationMatrix());
 
-    e(1,0) = r(1,0);
-    e(1,1) = r(1,1);
-    e(1,2) = r(1,2);
-    e(1,3) = 0;
+//    e(3,0) = 0;
+//    e(3,1) = 0;
+//    e(3,2) = 0;
+//    e(3,3) = 1.0;
 
-
-    e(2,0) = r(2,0);
-    e(2,1) = r(2,1);
-    e(2,2) = r(2,2);
-    e(2,3) = 0;
-
-
-    e(3,0) = 0;
-    e(3,1) = 0;
-    e(3,2) = 0;
-    e(3,3) = 1.0;
-
-
-            //matrix * p ???
-    return  scale * ( e * p) + translate;
+    QVector3D t = QVector3D(p.x(), p.y(), p.z());
+    t = (rotate.rotatedVector(t) + translate )* scale;
+            //???scale * ( e * p) + translate
+    return QVector4D(t.x(), t.y(), t.z(), p.w());
 }
 
 Transform Transform::combine_with(Transform &t)
 {
-    // pertinent de faire matrix * t.matrix avec les autre argument?
-    //peut etre une fonction decompose ?
-    //fonction compose ?
-    Transform res = Transform(matrix * t.matrix, rotate*t.rotate, translate + t.translate, scale * t.scale);
+
+    // multiplication des translation ?
+
+    Transform res = Transform( rotate * t.rotate, translate + t.translate, scale * t.scale );
     return (res);
+}
+
+
+Transform Transform::inverse(){
+    Transform res = Transform( rotate.inverted(), -translate, 1/scale);
+    return res;
 }

@@ -23,6 +23,7 @@ HEADERS += \
     transform.h
 
 RESOURCES += \
+    models.qrc \
     shaders.qrc \
     textures.qrc
 

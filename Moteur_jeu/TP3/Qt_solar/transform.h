@@ -12,13 +12,13 @@ class Transform
 
 public:
     Transform();
-    Transform(QMatrix4x4 matrix, QQuaternion rotate, QVector3D trans, float s);
+    Transform(QQuaternion rotate, QVector3D trans, float s);
 
     //fields
-    QMatrix4x4 matrix;
-    float scale; //uniform scale
+    QMatrix4x4  matrix;
+    float       scale;  //uniform scale
     QQuaternion rotate;
-    QVector3D translate;
+    QVector3D   translate;
 
     //methods
     QVector4D apply(QVector4D p);
@@ -27,13 +27,13 @@ public:
     QVector3D applyToVersor(QVector3D v);
     Transform combine_with(Transform &t);
     Transform inverse();
-    Transform interpolate(Transform &t, float k);
 
-    Transform mix_with(Transform b, float k){
+    Transform interpolate(Transform &t, float k){
         Transform result;
-        result.scale = this->scale * k +b.scale *(1-k);
+        result.scale = this->scale * k +t.scale *(1-k);                 // scale interpolation
+        rotate.slerp(this->rotate, t.rotate, k);                        // spherical linear interpolation for quaternions
        // result.rotate = this->rotate.mix_with(b.rotate, k);
-        result.translate = this->translate * k+b.translate * (1-k);
+        result.translate = this->translate * k+t.translate * (1-k);     // translation interpolation
         return result;
     }
 

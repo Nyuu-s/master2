@@ -60,6 +60,7 @@
 #include<QImage>
 #include <vector>
 #include <string>
+#include "transform.h"
 #include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -101,15 +102,29 @@ GeometryEngine::~GeometryEngine()
 
 void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSizeY, QImage &heightmap)
 {
+// test transformation to point -- sucess
+
+//    QVector3D a = QVector3D(1,0,0);
+//    qDebug("%f, %f, %f", a.x(), a.y(), a.z());
+//    QVector3D b;
+
+//    Transform t = Transform(QQuaternion(), QVector3D(2,0,0), 1);
+
+//    b = t.applyToPoint(a);
+//    qDebug("%f, %f, %f", b.x(), b.y(), b.z());
+
 
     std::vector<QVector3D>  points;
-    std::vector< std::vector<int>> faces;
-    OBJIO::open(":/sphere.obj", points, faces);
+    //std::vector< std::vector<int>> faces;
+    OBJIO::open("../TP3/Qt_solar/sphere.obj", points);
+
+
 
     VertexData vertices[points.size()];
 
     for(unsigned int i=0; i<points.size();i++){
         vertices[i].position = points[i];
+        qDebug("%f, %f, %f", vertices[i].position.x(), vertices[i].position.y(), vertices[i].position.z());
     }
     int vertexNumber = points.size();
 
