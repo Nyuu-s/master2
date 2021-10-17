@@ -2,21 +2,9 @@
 #define GAMEOBJECT_H
 
 #include<transform.h>
+#include"BasicIO.h"
+#include"component.h"
 
-
-template<typename T, int N>
-struct Component
-{
-    std::vector<T> entities;
-    Component()
-    {
-        entities.reserve(N);
-    }
-
-    void add(T ent)
-    {
-        entities.push_back(ent);
-    }
 
 
 class gameObject
@@ -28,6 +16,8 @@ public:
     gameObject();
 
     gameObject( Transform t);
+    void setComponent(Component c);
+    void addChild();
 
     std::vector<gameObject> children;
     gameObject* parent; // only one party is assumed for a gameObject

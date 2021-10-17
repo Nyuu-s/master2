@@ -53,6 +53,7 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../TP3/Qt_solar/main.cpp \
+		../TP3/Qt_solar/component.cpp \
 		../TP3/Qt_solar/gameObject.cpp \
 		../TP3/Qt_solar/mesh.cpp \
 		../TP3/Qt_solar/stb_image.cpp \
@@ -63,6 +64,7 @@ SOURCES       = ../TP3/Qt_solar/main.cpp \
 		qrc_textures.cpp \
 		moc_mainwidget.cpp
 OBJECTS       = main.o \
+		component.o \
 		gameObject.o \
 		mesh.o \
 		stb_image.o \
@@ -151,12 +153,14 @@ DIST          = ../TP3/Qt_solar/grass.png \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../TP3/TP3/Qt_solar/gameengine.pro ../TP3/Qt_solar/BasicIO.h \
+		../TP3/Qt_solar/component.h \
 		../TP3/Qt_solar/gameObject.h \
 		../TP3/Qt_solar/mainwidget.h \
 		../TP3/Qt_solar/geometryengine.h \
 		../TP3/Qt_solar/mesh.h \
 		../TP3/Qt_solar/stb_image.h \
 		../TP3/Qt_solar/transform.h ../TP3/Qt_solar/main.cpp \
+		../TP3/Qt_solar/component.cpp \
 		../TP3/Qt_solar/gameObject.cpp \
 		../TP3/Qt_solar/mesh.cpp \
 		../TP3/Qt_solar/stb_image.cpp \
@@ -351,8 +355,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../TP3/Qt_solar/models.qrc ../TP3/Qt_solar/shaders.qrc ../TP3/Qt_solar/textures.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../TP3/Qt_solar/BasicIO.h ../TP3/Qt_solar/gameObject.h ../TP3/Qt_solar/mainwidget.h ../TP3/Qt_solar/geometryengine.h ../TP3/Qt_solar/mesh.h ../TP3/Qt_solar/stb_image.h ../TP3/Qt_solar/transform.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../TP3/Qt_solar/main.cpp ../TP3/Qt_solar/gameObject.cpp ../TP3/Qt_solar/mesh.cpp ../TP3/Qt_solar/stb_image.cpp ../TP3/Qt_solar/transform.cpp ../TP3/Qt_solar/mainwidget.cpp ../TP3/Qt_solar/geometryengine.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../TP3/Qt_solar/BasicIO.h ../TP3/Qt_solar/component.h ../TP3/Qt_solar/gameObject.h ../TP3/Qt_solar/mainwidget.h ../TP3/Qt_solar/geometryengine.h ../TP3/Qt_solar/mesh.h ../TP3/Qt_solar/stb_image.h ../TP3/Qt_solar/transform.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../TP3/Qt_solar/main.cpp ../TP3/Qt_solar/component.cpp ../TP3/Qt_solar/gameObject.cpp ../TP3/Qt_solar/mesh.cpp ../TP3/Qt_solar/stb_image.cpp ../TP3/Qt_solar/transform.cpp ../TP3/Qt_solar/mainwidget.cpp ../TP3/Qt_solar/geometryengine.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -437,11 +441,22 @@ main.o: ../TP3/Qt_solar/main.cpp ../TP3/Qt_solar/mainwidget.h \
 		../TP3/Qt_solar/geometryengine.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../TP3/Qt_solar/main.cpp
 
+component.o: ../TP3/Qt_solar/component.cpp ../TP3/Qt_solar/component.h \
+		../TP3/Qt_solar/geometryengine.h \
+		../TP3/Qt_solar/BasicIO.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o component.o ../TP3/Qt_solar/component.cpp
+
 gameObject.o: ../TP3/Qt_solar/gameObject.cpp ../TP3/Qt_solar/gameObject.h \
-		../TP3/Qt_solar/transform.h
+		../TP3/Qt_solar/transform.h \
+		../TP3/Qt_solar/BasicIO.h \
+		../TP3/Qt_solar/component.h \
+		../TP3/Qt_solar/geometryengine.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o gameObject.o ../TP3/Qt_solar/gameObject.cpp
 
-mesh.o: ../TP3/Qt_solar/mesh.cpp ../TP3/Qt_solar/mesh.h
+mesh.o: ../TP3/Qt_solar/mesh.cpp ../TP3/Qt_solar/mesh.h \
+		../TP3/Qt_solar/BasicIO.h \
+		../TP3/Qt_solar/geometryengine.h \
+		../TP3/Qt_solar/component.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mesh.o ../TP3/Qt_solar/mesh.cpp
 
 stb_image.o: ../TP3/Qt_solar/stb_image.cpp ../TP3/Qt_solar/stb_image.h
@@ -455,9 +470,11 @@ mainwidget.o: ../TP3/Qt_solar/mainwidget.cpp ../TP3/Qt_solar/mainwidget.h \
 		../TP3/Qt_solar/BasicIO.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwidget.o ../TP3/Qt_solar/mainwidget.cpp
 
-geometryengine.o: ../TP3/Qt_solar/geometryengine.cpp ../TP3/Qt_solar/geometryengine.h \
-		../TP3/Qt_solar/BasicIO.h \
+geometryengine.o: ../TP3/Qt_solar/geometryengine.cpp ../TP3/Qt_solar/BasicIO.h \
 		../TP3/Qt_solar/transform.h \
+		../TP3/Qt_solar/mesh.h \
+		../TP3/Qt_solar/geometryengine.h \
+		../TP3/Qt_solar/component.h \
 		../TP3/Qt_solar/stb_image.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o geometryengine.o ../TP3/Qt_solar/geometryengine.cpp
 

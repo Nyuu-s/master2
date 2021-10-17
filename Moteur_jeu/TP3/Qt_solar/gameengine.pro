@@ -4,6 +4,7 @@ TARGET = gameengine
 TEMPLATE = app
 
 SOURCES += main.cpp \
+    component.cpp \
     gameObject.cpp \
     mesh.cpp \
     stb_image.cpp \
@@ -15,6 +16,7 @@ SOURCES += \
 
 HEADERS += \
     BasicIO.h \
+    component.h \
     gameObject.h \
     mainwidget.h \
     geometryengine.h \

@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-#include "geometryengine.h"
+
 
 #include <iostream>
 
@@ -62,6 +62,8 @@
 #include <string>
 #include "transform.h"
 #include <iostream>
+#include"mesh.h"
+#include "gameObject.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -114,19 +116,17 @@ void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSi
 //    qDebug("%f, %f, %f", b.x(), b.y(), b.z());
 
 
-    std::vector<QVector3D>  points;
-    //std::vector< std::vector<int>> faces;
-    OBJIO::open("../TP3/Qt_solar/sphere.obj", points);
+    Mesh a = Mesh();
+    qDebug("%d " , Component::ids);
+    Mesh b = Mesh();
+    qDebug("%d", Component::ids);
+    a.loadOBJ("../TP3/Qt_solar/sphere.obj");
+    a.printVertices();
+    Transform t = Transform();
+    gameObject g = gameObject(t);
+    g.setComponent(a);
 
 
-
-    VertexData vertices[points.size()];
-
-    for(unsigned int i=0; i<points.size();i++){
-        vertices[i].position = points[i];
-        qDebug("%f, %f, %f", vertices[i].position.x(), vertices[i].position.y(), vertices[i].position.z());
-    }
-    int vertexNumber = points.size();
 
 //    float  yStep = (1.0 - (-1.0) / float(nH-1));
 //    float  xStep = (1.0 - (-1.0) / float(nW-1));
@@ -224,7 +224,7 @@ void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSi
 //! [1]
     // Transfer vertex data to VBO 0
     arrayBuf.bind();
-    arrayBuf.allocate(vertices, vertexNumber * sizeof(VertexData));
+   arrayBuf.allocate(a.vertices, a.vertexNumber * sizeof(VertexData));
 
     // Transfer index data to VBO 1
     //indexBuf.bind();

@@ -10,4 +10,9 @@ gameObject::gameObject(Transform t) : transform(t)
 
 }
 
+void gameObject::setComponent(Component c)
+{
+    this->component = c;
+}
+
 

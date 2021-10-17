@@ -14,9 +14,9 @@ Transform::Transform( QQuaternion r, QVector3D trans, float s)
 {
     matrix = (QMatrix4x4(rotate.toRotationMatrix()) * scale);
     matrix(0,3) = translate.x();
-    matrix(0,3) = translate.y();
-    matrix(0,3) = translate.z();
-    matrix(0,3) = 1;
+    matrix(1,3) = translate.y();
+    matrix(2,3) = translate.z();
+    matrix(3,3) = 1;
 
 }
 
