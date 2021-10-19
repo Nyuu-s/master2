@@ -12,7 +12,7 @@ class Cell{
         stroke(0)
         switch (this.type) {
             case 0:
-                fill(128,0,128);
+                fill(80,80,80);
                 break;
             case 1:
                 fill(0);
