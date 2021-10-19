@@ -4,6 +4,23 @@ class Cell{
         this.i = i;
         this.j = j;
         this.type = type;
+        this.g = 0;
+        this.f = 0;
+        this.h = 0;
+        this.neighbors = [];
+    }
+
+    addNeighbors(){
+        var x = this.i;
+        var y = this.j;
+        if(x < col -1)
+            this.neighbors.push(getCell(x+1, y));
+        if(x > 0)
+            this.neighbors.push(getCell(x-1, y));
+        if(y < row -1)
+            this.neighbors.push(getCell(x, y+1));
+        if(y > 0)
+            this.neighbors.push(getCell(x, y-1));
     }
 
     drawCell(){

@@ -16,10 +16,11 @@ let col;
 let row;
 let res = 40;
 let a1;
+let v1;
 
 function keyPressed(){
   if(keyCode == UP_ARROW){
-    a1.move(direction.UP, 1);
+    a1.move(direction.UP, 2);
   }
   else if(keyCode == DOWN_ARROW){
 
@@ -33,9 +34,18 @@ function keyPressed(){
 
     a1.move(direction.LEFT , 1);
   }
+
+  //create wall (a* debug)
+  if(keyCode == SHIFT ){
+    let c = getCell(floor(mouseX/res), floor(mouseY/res));
+    c.type = 1;
+  }
 }
 
 
+function getCell(i,j){
+  return grid[j * row + i];
+}
 
 //setup and draw
 
@@ -43,7 +53,8 @@ function setup(){
   createCanvas(800, 800);
   col = floor(height/res);
   row = floor(width/res);
-  a1 = new Agent(new Cell(5,5),1);
+ 
+  
   for (let j = 0; j < row; j++) {
     for (let i = 0; i < col; i++) {
       
@@ -67,6 +78,14 @@ function setup(){
     }  
   }
 
+  for (let j = 0; j < row; j++) {
+    for (let i = 0; i < col; i++) {
+      getCell(i,j).addNeighbors();
+    }  
+  }
+  a1 = new Agent(grid[26],1);
+  v1 = new Voiture(grid[0]);
+
 }
 
 function draw(){
@@ -77,6 +96,7 @@ function draw(){
   frameRate(10);
   
   a1.show();
+  v1.show();
   
     
   
