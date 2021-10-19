@@ -28,6 +28,15 @@ double calcPSNR(ImageBase &image1, ImageBase &image2){
 	return (10 * log10(pow(255,2) / calcEQM(image1, image2) ));
 }
 
+int getSequence(unsigned int key, int h, int w, ImageBase &output){
+		for (int i = 0; i < h; i++)
+			for (int j = 0; j < w; j++)
+			{
+				
+				output[i][j]  = rand() % 2;
+
+			}
+}
 
 int getSequence(unsigned int key, int h, int w, bool color, ImageBase &output){
 	srand(key);
@@ -153,6 +162,35 @@ void planBinaire(int k, ImageBase &imIn, ImageBase &output){
 	
 }
 
+void insertMessage(ImageBase& imIn,ImageBase& imMSG,  ImageBase& imOut){
+	int c =0;
+	for (int i = 0; i < imIn.getHeight(); i++)
+	{
+		for (int j = 0; j < imIn.getWidth(); j++)
+		{
+			int a = imMSG[i][j] & 1;
+			
+													//if bit from message == 1 	
+			if(a == 1){
+				if((imIn[i][j] & 1) != 1){ 			// check if current lsb is already 1 else add 1 to number
+					imOut[i][j] = imIn[i][j] + 1;
+				}
+				else{
+					imOut[i][j] = imIn[i][j];
+				}
+			}
+			else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+			{
+				imOut[i][j] = imIn[i][j] & 254;
+			}
+				
+		}
+		
+		/* code */
+	}
+	
+}
+
 int main(int argc, char **argv)
 {
 	///////////////////////////////////////// Exemple d'un seuillage d'image
@@ -203,8 +241,16 @@ int main(int argc, char **argv)
 
 
 	ImageBase imgBinary(imIn.getWidth(), imIn.getWidth(), imIn.getColor());
-	planBinaire(4, imIn, imgBinary);
+	planBinaire(1, ImOut, imgBinary);
 	imgBinary.save("PlanBinaire.ppm");
+
+
+	ImageBase ImInserted(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
+	ImageBase ImRand2(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
+	getSequence(38, imIn.getHeight(), imIn.getHeight(), ImRand2);
+	insertMessage(imIn, ImRand2, ImInserted);
+	ImInserted.save("testInsert");
+
 
 
 	return 0;
