@@ -5,7 +5,7 @@ Mesh::Mesh(){
     //this->id = id;
     this->indexNumber = 0;
     this->vertexNumber = 0;
-    this->vertices = new VertexData[1];
+    this->vertices = std::vector<VertexData>();
     this->indices = new GLushort[1];
 
 
@@ -15,28 +15,35 @@ unsigned int Mesh::getID(){
     return this->id;
 }
 
-Mesh::Mesh(VertexData& vertices, GLushort indexes[], unsigned int vertexCount, unsigned int indexCount) {
+Mesh::Mesh(std::vector<VertexData>& v, GLushort indexes[], unsigned int vertexCount, unsigned int indexCount) {
     //this->id = id;
     this->indexNumber = indexCount;
     this->vertexNumber = vertexCount;
-    this->vertices = new VertexData[vertexNumber];
+    this->vertices.reserve(vertexNumber);
     this->indices = new GLushort[indexNumber];
-    *this->vertices = vertices;
+    this->vertices = v;
     this->indices = indexes;
 
 }
 
-void Mesh::loadOBJ(std::string filename){
+Mesh::Mesh(std::vector<VertexData>& v, unsigned int vertexCount) {
+    //this->id = id;
+
+    this->vertexNumber = vertexCount;
+    this->vertices.reserve(vertexNumber);
+    this->indices = new GLushort[indexNumber];
+    this->vertices = v;
+
+
+}
+
+    std::vector<QVector3D> Mesh::loadOBJ(std::string filename){
     std::vector<QVector3D>  points;
     //std::vector< std::vector<int>> faces;
     OBJIO::open(filename, points);
 
-    this->vertexNumber = points.size();
-    this->vertices = new VertexData[vertexNumber];
+    return points;
 
-    for(unsigned int i=0; i<points.size();i++){
-        vertices[i].position = points[i];
-    }
 }
 
 

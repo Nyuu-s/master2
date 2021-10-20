@@ -117,7 +117,7 @@ void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSi
 
 
     Mesh a = Mesh();
-    a.loadOBJ("../TP3/Qt_solar/sphere.obj");
+    a.loadOBJ("");
     a.printVertices();
     //Transform t = Transform();
     //gameObject g = gameObject(t);
