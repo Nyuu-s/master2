@@ -56,6 +56,10 @@
 
 #include <math.h>
 
+#include "mesh.h"
+#include "gameObject.h"
+#include "transform.h"
+
 #include<BasicIO.h>
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -275,6 +279,41 @@ void MainWidget::paintGL()
 //! [6]
 //!
 //!
+    std::string meshLocation = "../TP3/Qt_solar/sphere.obj";
+    std::vector<QVector3D> sphere(Mesh::loadOBJ(meshLocation));
+    sphere.reserve(sphere.size());
+    std::vector<VertexData> sphereVertex(sphere.size());
+
+    for ( auto a : sphere ) {
+        VertexData t = VertexData();
+        t.position = a;
+        sphereVertex.push_back(t);
+    }
+
+    gameObject World = gameObject(Transform(QQuaternion(), QVector3D(), 1), 1, 1);
+    gameObject Soleil = gameObject(Transform(QQuaternion(), QVector3D(), 1),9,9);
+    gameObject Mercure = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
+    gameObject Venus = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
+    gameObject Mars = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
+    gameObject Terre = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
+
+    World.addChild(Soleil);
+
+    Mesh planet = Mesh(sphereVertex, sphereVertex.size());
+
+    Soleil.addComponent(planet);
+    Mercure.addComponent(planet);
+    Venus.addComponent(planet);
+    Mars.addComponent(planet);
+    Terre.addComponent(planet);
+
+
+    Soleil.addChild(Mercure);
+    Soleil.addChild(Venus);
+    Soleil.addChild(Mars);
+    Soleil.addChild(Terre);
+
+
 
 
     // Use texture unit 0 which contains cube.png

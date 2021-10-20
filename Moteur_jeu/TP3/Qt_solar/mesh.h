@@ -13,12 +13,12 @@ public:
     unsigned int id;
 
     GLushort* indices;
-    VertexData* vertices;
+    std::vector<VertexData> vertices();
 
 
     Mesh();
-    Mesh(VertexData& vertices, GLushort indexes[], unsigned int vertexCount, unsigned int indexCount);
-    void loadOBJ(std::string filename);
+    Mesh(std::vector<VertexData>& vertices, GLushort indexes[], unsigned int vertexCount, unsigned int indexCount);
+    static std::vector<QVector3D> loadOBJ(std::string filename);
 
     unsigned int getID();
     void printVertices();

@@ -162,26 +162,26 @@ void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSi
 
 //    }
 
-    QMatrix3x3 rotation = QMatrix3x3();
-        float angle = 90;
+//    QMatrix3x3 rotation = QMatrix3x3();
+//        float angle = 90;
 
-        rotation(0,0) = cos(angle);
-        rotation(0,1) = 0;
-        rotation(0,2) = sin(angle);
+//        rotation(0,0) = cos(angle);
+//        rotation(0,1) = 0;
+//        rotation(0,2) = sin(angle);
 
-        rotation(1,0) = 0;
-        rotation(1,1) = 1;
-        rotation(1,2) = 0;
+//        rotation(1,0) = 0;
+//        rotation(1,1) = 1;
+//        rotation(1,2) = 0;
 
-        rotation(2,0) = -sin(angle);
-        rotation(2,1) = 0;
-        rotation(2,2) = cos(angle);
+//        rotation(2,0) = -sin(angle);
+//        rotation(2,1) = 0;
+//        rotation(2,2) = cos(angle);
 
-        QQuaternion ra = QQuaternion();
-        QQuaternion yRotation = QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 90 );
-        ra.fromRotationMatrix(rotation);
+//        QQuaternion ra = QQuaternion();
+//        QQuaternion yRotation = QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 90 );
+//        ra.fromRotationMatrix(rotation);
 
-        Transform t = Transform(yRotation, QVector3D(1,0,1), 1);
+//        Transform t = Transform(yRotation, QVector3D(1,0,1), 1);
 
 
 
@@ -223,13 +223,13 @@ void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSi
     }
 
 
-    for(unsigned int i = 0; i< vertexNumber; i++){
-        qDebug("avant %f, %f, %f", vertices[i].position.x(), vertices[i].position.y(), vertices[i].position.z());
-        QVector3D temp = t.applyToPoint(vertices[i].position);
+//    for(unsigned int i = 0; i< vertexNumber; i++){
+//        qDebug("avant %f, %f, %f", vertices[i].position.x(), vertices[i].position.y(), vertices[i].position.z());
+//        QVector3D temp = t.applyToPoint(vertices[i].position);
 
-        vertices[i].position = temp;
-        qDebug("apres %f, %f, %f", vertices[i].position.x(), vertices[i].position.y(), vertices[i].position.z());
-    }
+//        vertices[i].position = temp;
+//        qDebug("apres %f, %f, %f", vertices[i].position.x(), vertices[i].position.y(), vertices[i].position.z());
+//    }
 
 
 
