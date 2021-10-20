@@ -86,7 +86,7 @@ GeometryEngine::GeometryEngine()
 
 
     // Initializes cube geometry and transfers it to VBOs
-    initCubeGeometry(64, 64, 3, 3, data);
+    initCubeGeometry(64, 64, 1, 1, data);
 
 
 
@@ -117,24 +117,21 @@ void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSi
 
 
     Mesh a = Mesh();
-    qDebug("%d " , Component::ids);
-    Mesh b = Mesh();
-    qDebug("%d", Component::ids);
     a.loadOBJ("../TP3/Qt_solar/sphere.obj");
     a.printVertices();
-    Transform t = Transform();
-    gameObject g = gameObject(t);
-    g.setComponent(a);
+    //Transform t = Transform();
+    //gameObject g = gameObject(t);
+    //g.addComponent(a);
 
 
 
 //    float  yStep = (1.0 - (-1.0) / float(nH-1));
 //    float  xStep = (1.0 - (-1.0) / float(nW-1));
 
-//    // For cube we would need only 8 vertices but we have to
-//    // duplicate vertex for each face because texture coordinate
-//    // is different.
-//    // Hence 4 vertices per face and 6 faces vertices = 24 vertices
+    // For cube we would need only 8 vertices but we have to
+    // duplicate vertex for each face because texture coordinate
+    // is different.
+    // Hence 4 vertices per face and 6 faces vertices = 24 vertices
 //    unsigned int vertexNumber = nH*nW ;
 //    VertexData vertices[vertexNumber];
 
@@ -163,72 +160,105 @@ void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSi
 //            indices[2*y+y*(nH*2)+nH*2+1]=(y+1)*nH;
 //        }
 
-  //  }
-//    float plan_xmax = boardSizeX;
-//    float plan_xmin = -boardSizeX;
-//    float plan_ymax = boardSizeY;
-//    float plan_ymin = -boardSizeY;
-//    float tex_xStep=2/(float)(nW-1);
-//    float tex_yStep=2/(float)(nH-1);
-
-//    float xStep=(plan_xmax-plan_xmin)/(float)(nW-1);
-//    float yStep=(plan_ymax-plan_ymin)/(float)(nH-1);
-//    srand (static_cast <unsigned> (time(0)));
-
-//    int k=0;
-
-
-//    //vertex buffer
-//    unsigned int vertexNumber = nH*nW;
-//    VertexData vertices[vertexNumber];
-//    for(int i=0; i<nH; i++){
-//         for(int j=0;j<nW; j++){
-//             QRgb test = heightmap.pixel(  j, i);
-
-//          //   qDebug("%d", qGray(test) );
-//            float r = static_cast <float>  (qGray(test))/ 255.0;
-//           // qDebug("%f", r );
-//             vertices[k++]= {QVector3D(
-//                                    plan_xmin + xStep * i,
-//                                    plan_ymin + yStep * j,
-//                                    0.0),
-//                             QVector2D(
-//                                    (tex_xStep*i)/2,
-//                                    (tex_yStep*j)/2
-//                                     )
-//                            };
-
-//        }
 //    }
 
+    QMatrix3x3 rotation = QMatrix3x3();
+        float angle = 90;
+
+        rotation(0,0) = cos(angle);
+        rotation(0,1) = 0;
+        rotation(0,2) = sin(angle);
+
+        rotation(1,0) = 0;
+        rotation(1,1) = 1;
+        rotation(1,2) = 0;
+
+        rotation(2,0) = -sin(angle);
+        rotation(2,1) = 0;
+        rotation(2,2) = cos(angle);
+
+        QQuaternion ra = QQuaternion();
+        QQuaternion yRotation = QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 90 );
+        ra.fromRotationMatrix(rotation);
+
+        Transform t = Transform(yRotation, QVector3D(1,0,1), 1);
 
 
-//    unsigned int indexCount = nW*(nH-1)*2 + 2*(nH-1); //nH*nW+nH*(nW-2)+2*(nW-2)+2;//nH*nW + (nH-2) * nW + (nH-2) * 2;//((nH-1)*(nW*2))+(nH-2)*2;//
-//    GLushort indices[indexCount];
 
-//    //index buffer
-//    int e=0;
-//    for(int i=0; i<nH-1; i++){
-//         for(int j=0;j<nW; j++){
-//             //stripe
-//                 indices[e++] = i*nH+j;
-//                 indices[e++] = (i+1)*nH+j;
+    float plan_xmax = boardSizeX;
+    float plan_xmin = -boardSizeX;
+    float plan_ymax = boardSizeY;
+    float plan_ymin = -boardSizeY;
+    float tex_xStep=2/(float)(nW-1);
+    float tex_yStep=2/(float)(nH-1);
 
-//             }
-//            //end line stripe
-//             indices[e++]=(i+1)*nH+nH-1;
-//             indices[e++]=(i+1)*nH;
-//         }
+    float xStep=(plan_xmax-plan_xmin)/(float)(nW-1);
+    float yStep=(plan_ymax-plan_ymin)/(float)(nH-1);
+    srand (static_cast <unsigned> (time(0)));
+
+    int k=0;
+
+
+    //vertex buffer
+    unsigned int vertexNumber = nH*nW;
+    VertexData vertices[vertexNumber];
+    for(int i=0; i<nH; i++){
+         for(int j=0;j<nW; j++){
+             QRgb test = heightmap.pixel(  j, i);
+
+            //   qDebug("%d", qGray(test) );
+           // float r = static_cast <float>  (qGray(test))/ 255.0;
+           // qDebug("%f", r );
+             vertices[k++]= {QVector3D(
+                                    plan_xmin + xStep * i,
+                                    plan_ymin + yStep * j,
+                                    0.0),
+                             QVector2D(
+                                    (tex_xStep*i)/2,
+                                    (tex_yStep*j)/2
+                                     )
+                            };
+
+        }
+    }
+
+
+    for(unsigned int i = 0; i< vertexNumber; i++){
+        qDebug("avant %f, %f, %f", vertices[i].position.x(), vertices[i].position.y(), vertices[i].position.z());
+        QVector3D temp = t.applyToPoint(vertices[i].position);
+
+        vertices[i].position = temp;
+        qDebug("apres %f, %f, %f", vertices[i].position.x(), vertices[i].position.y(), vertices[i].position.z());
+    }
+
+
+
+    unsigned int indexCount = nW*(nH-1)*2 + 2*(nH-1); //nH*nW+nH*(nW-2)+2*(nW-2)+2;//nH*nW + (nH-2) * nW + (nH-2) * 2;//((nH-1)*(nW*2))+(nH-2)*2;//
+    GLushort indices[indexCount];
+
+    //index buffer
+    int e=0;
+    for(int i=0; i<nH-1; i++){
+         for(int j=0;j<nW; j++){
+             //stripe
+                 indices[e++] = i*nH+j;
+                 indices[e++] = (i+1)*nH+j;
+
+             }
+            //end line stripe
+             indices[e++]=(i+1)*nH+nH-1;
+             indices[e++]=(i+1)*nH;
+         }
 
 
 //! [1]
     // Transfer vertex data to VBO 0
     arrayBuf.bind();
-   arrayBuf.allocate(a.vertices, a.vertexNumber * sizeof(VertexData));
+   arrayBuf.allocate(vertices, vertexNumber * sizeof(VertexData));
 
-    // Transfer index data to VBO 1
-    //indexBuf.bind();
-    //indexBuf.allocate(indices,  indexCount* sizeof(GLushort));
+   //  Transfer index data to VBO 1
+    indexBuf.bind();
+    indexBuf.allocate(indices,  indexCount* sizeof(GLushort));
 //! [1]
 }
 
@@ -256,6 +286,6 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLES, indexBuf.size()/2, GL_UNSIGNED_SHORT, 0); //Careful update indicesNumber when creating new geometry
+    glDrawElements(GL_TRIANGLE_STRIP, indexBuf.size()/2, GL_UNSIGNED_SHORT, 0); //Careful update indicesNumber when creating new geometry
 }
 //! [2]

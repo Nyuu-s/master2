@@ -3,7 +3,7 @@
 
 #include"BasicIO.h"
 #include"geometryengine.h"
-#include"component.h"
+#include"componnent.h"
 
 class Mesh : public Component
 {
@@ -20,6 +20,7 @@ public:
     Mesh(VertexData& vertices, GLushort indexes[], unsigned int vertexCount, unsigned int indexCount);
     void loadOBJ(std::string filename);
 
+    unsigned int getID();
     void printVertices();
 };
 

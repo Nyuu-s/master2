@@ -2,7 +2,7 @@
 
 
 Mesh::Mesh(){
-    this->id = ids;
+    //this->id = id;
     this->indexNumber = 0;
     this->vertexNumber = 0;
     this->vertices = new VertexData[1];
@@ -11,11 +11,12 @@ Mesh::Mesh(){
 
 }
 
-Mesh::getID(){
+unsigned int Mesh::getID(){
     return this->id;
 }
+
 Mesh::Mesh(VertexData& vertices, GLushort indexes[], unsigned int vertexCount, unsigned int indexCount) {
-    this->id = ids;
+    //this->id = id;
     this->indexNumber = indexCount;
     this->vertexNumber = vertexCount;
     this->vertices = new VertexData[vertexNumber];

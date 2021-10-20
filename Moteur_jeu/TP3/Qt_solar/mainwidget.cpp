@@ -19,7 +19,8 @@
 ** as follows:
 **
 ** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
+** modifi
+** tion, are permitted provided that the following conditions are
 ** met:
 **   * Redistributions of source code must retain the above copyright
 **     notice, this list of conditions and the following disclaimer.
@@ -239,7 +240,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 200.0, fov = 45.0;
+    const qreal zNear = 1.0, zFar = 500.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();

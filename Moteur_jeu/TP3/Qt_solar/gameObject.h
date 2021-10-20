@@ -3,8 +3,8 @@
 
 #include<transform.h>
 #include"BasicIO.h"
-#include"component.h"
 
+#include"componnent.h"
 
 
 class gameObject
@@ -12,17 +12,26 @@ class gameObject
 
 public:
 
+
+    unsigned int id;
+    std::string name;
+
     Transform transform;
     gameObject();
 
-    gameObject( Transform t);
-    void setComponent(Component c);
-    void addChild();
+    gameObject( Transform t, int n, int m);
+    void addComponent(Component c);
+    void addChild(gameObject a);
+    void setParent(gameObject a);
+    void removeChild(gameObject c);
+    void removeComponent(Component c);
 
     std::vector<gameObject> children;
     gameObject* parent; // only one party is assumed for a gameObject
 
-    Component component;
+    std::vector<Component> components;
+
+
 
 
 };
