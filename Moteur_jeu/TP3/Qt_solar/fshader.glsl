@@ -12,10 +12,10 @@ in vec3 v_position;
 void main()
 {
     float height = texture2D(heightmap, v_texcoord).p;
-    if(height > 0.4){
+    if(height > 0.7){
         gl_FragColor = texture2D(snow, v_texcoord);
     }
-    else    if(height > 0.2){
+    else if(height > 0.5){
         gl_FragColor = texture2D(rock, v_texcoord);
     }
     else{

@@ -9,10 +9,8 @@ public:
 
     std::string name;
 
-    Component(){
-
-    };
-
+    Component(){};
+    virtual ~Component(){};
 };
 
 #endif // COMPONNENT_H

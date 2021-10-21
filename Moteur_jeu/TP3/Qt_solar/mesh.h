@@ -21,6 +21,8 @@ public:
     Mesh(std::vector<VertexData>& vertices,  unsigned int vertexCount);
     static std::vector<QVector3D> loadOBJ(std::string filename);
 
+    VertexData* toArray(VertexData* arr);
+
     unsigned int getID();
     void printVertices();
 };

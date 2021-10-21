@@ -55,6 +55,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 
+
 #include <QVector2D>
 #include <QVector3D>
 
@@ -71,9 +72,13 @@ public:
     virtual ~GeometryEngine();
 
     void drawCubeGeometry(QOpenGLShaderProgram *program);
+    void drawSphereGeometry(QOpenGLShaderProgram *program);
+
 
 private:
-    void initCubeGeometry(int nH, int nW, int boardSizeX, int boardSizeY, QImage &heightmap);
+    void initCubeGeometry(int nH, int nW, int boardSizeX, int boardSizeY);
+
+    void initSphereGeometry();
 
 
     QOpenGLBuffer arrayBuf;

@@ -59,7 +59,7 @@
 #include "mesh.h"
 #include "gameObject.h"
 #include "transform.h"
-
+#include "graph.h"
 #include<BasicIO.h>
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -132,6 +132,8 @@ void MainWidget::timerEvent(QTimerEvent *)
 void MainWidget::keyPressEvent(QKeyEvent *event)
 {
 
+
+
     switch (event->key()) {
         case Qt::Key_Z: /* haut */
             projection.translate(0.0, -1.0, 0.0);
@@ -151,6 +153,9 @@ void MainWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_E: /* monter */
             projection.translate(0.0, 0.0, -1.0);
             break;
+
+
+
 
 
     }
@@ -259,14 +264,13 @@ void MainWidget::paintGL()
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    int width, height, nrChannels;
 
 
-    rock->bind(2);
 
-    heightmap->bind(1);
-    snow->bind(3);
     texture->bind(0);
+    heightmap->bind(1);
+    rock->bind(2);
+    snow->bind(3);
 
 //! [6]
     // Calculate model view transformation
@@ -287,6 +291,7 @@ void MainWidget::paintGL()
     for ( auto a : sphere ) {
         VertexData t = VertexData();
         t.position = a;
+       // t.texCoord = ??
         sphereVertex.push_back(t);
     }
 
@@ -298,6 +303,8 @@ void MainWidget::paintGL()
     gameObject Terre = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
 
     World.addChild(Soleil);
+
+    Graph scene = Graph(World);
 
     Mesh planet = Mesh(sphereVertex, sphereVertex.size());
 

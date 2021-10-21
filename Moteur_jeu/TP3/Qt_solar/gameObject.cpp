@@ -1,5 +1,8 @@
 #include "gameObject.h"
 
+
+
+
 gameObject::gameObject()
 {
 
@@ -32,6 +35,20 @@ void gameObject::removeChild(gameObject c){
     }
 }
 
+void gameObject::appyTransform(Transform transform)
+{
+    for(Component& component : this->components){
+
+        if(instanceof<Mesh>(&component)){
+            Mesh* mesh = dynamic_cast<Mesh*>(&component);
+            for(auto vertex : mesh->vertices){
+                transform.applyToPoint(vertex.position);
+            }
+
+        }
+    }
+
+}
 
 void gameObject::removeComponent(Component c){
     for(unsigned int i =0; i<this->components.size(); i++){

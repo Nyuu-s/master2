@@ -5,6 +5,7 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     gameObject.cpp \
+    graph.cpp \
     mesh.cpp \
     stb_image.cpp \
     transform.cpp
@@ -17,6 +18,7 @@ HEADERS += \
     BasicIO.h \
     componnent.h \
     gameObject.h \
+    graph.h \
     mainwidget.h \
     geometryengine.h \
     mesh.h \

@@ -15,6 +15,15 @@ unsigned int Mesh::getID(){
     return this->id;
 }
 
+VertexData* Mesh::toArray(VertexData* arr){
+
+    for(unsigned int i =0; i<this->vertices.size(); i++){
+        arr[i].position = this->vertices[i].position;
+        arr[i].texCoord = this->vertices[i].texCoord;
+    }
+    return arr;
+}
+
 Mesh::Mesh(std::vector<VertexData>& v, GLushort indexes[], unsigned int vertexCount, unsigned int indexCount) {
     //this->id = id;
     this->indexNumber = indexCount;
