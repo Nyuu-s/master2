@@ -162,27 +162,159 @@ void planBinaire(int k, ImageBase &imIn, ImageBase &output){
 	
 }
 
-void insertMessage(ImageBase& imIn,ImageBase& imMSG,  ImageBase& imOut){
-	int c =0;
+void insertMessage(ImageBase& imIn,ImageBase& imMSG,  ImageBase& imOut, int k){
+	if(k > 7){
+		k = 7;
+	}
+	
 	for (int i = 0; i < imIn.getHeight(); i++)
 	{
 		for (int j = 0; j < imIn.getWidth(); j++)
 		{
-			int a = imMSG[i][j] & 1;
-			
-													//if bit from message == 1 	
-			if(a == 1){
-				if((imIn[i][j] & 1) != 1){ 			// check if current lsb is already 1 else add 1 to number
-					imOut[i][j] = imIn[i][j] + 1;
-				}
-				else{
-					imOut[i][j] = imIn[i][j];
+			if(!(i == 0 || j == 0)){ // for xor image
+
+				
+				int b = pow(2,k);
+				int c = 255 - b;
+				int a = imMSG[i][j] & b;
+				switch (k)
+				{
+				case 0:
+						
+																//if bit from message == 1 	
+						if(a == 1){
+							if((imIn[i][j] & 1) != 1){ 			// check if current lsb is already 1 else add 1 to number
+								imOut[i][j] = imIn[i][j] + 1;
+							}
+							else{
+								imOut[i][j] = imIn[i][j];
+							}
+						}
+						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						{
+							imOut[i][j] = imIn[i][j] & c;
+						}
+					break;
+				case 1:
+						
+																//if bit from message == 1 	
+						if(a == 1){
+							if((imIn[i][j] & b) != 1){ 			
+								imOut[i][j] = imIn[i][j] + b;
+							}
+							else{
+								imOut[i][j] = imIn[i][j];
+							}
+						}
+						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						{
+							imOut[i][j] = imIn[i][j] & c;
+						}
+					break;
+				case 2:
+						
+																//if bit from message == 1 	
+						if(a == 1){
+							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
+								imOut[i][j] = imIn[i][j] + b;
+							}
+							else{
+								imOut[i][j] = imIn[i][j];
+							}
+						}
+						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						{
+							imOut[i][j] = imIn[i][j] & c;
+						}
+					break;
+				case 3:
+						
+																//if bit from message == 1 	
+						if(a == 1){
+							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
+								imOut[i][j] = imIn[i][j] + b;
+							}
+							else{
+								imOut[i][j] = imIn[i][j];
+							}
+						}
+						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						{
+							imOut[i][j] = imIn[i][j] & b;
+						}
+					break;
+				case 4:
+						
+																//if bit from message == 1 	
+						if(a == 1){
+							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
+								imOut[i][j] = imIn[i][j] + b;
+							}
+							else{
+								imOut[i][j] = imIn[i][j];
+							}
+						}
+						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						{
+							imOut[i][j] = imIn[i][j] & c;
+						}
+					break;
+				case 5:
+						
+																//if bit from message == 1 	
+						if(a == 1){
+							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
+								imOut[i][j] = imIn[i][j] + b;
+							}
+							else{
+								imOut[i][j] = imIn[i][j];
+							}
+						}
+						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						{
+							imOut[i][j] = imIn[i][j] & c;
+						}
+					break;
+				case 6:
+						
+																//if bit from message == 1 	
+						if(a == 1){
+							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
+								imOut[i][j] = imIn[i][j] + b;
+							}
+							else{
+								imOut[i][j] = imIn[i][j];
+							}
+						}
+						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						{
+							imOut[i][j] = imIn[i][j] & c;
+						}
+					break;
+				default:
+						
+																//if bit from message == 1 	
+						if(a == 1){
+							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
+								imOut[i][j] = imIn[i][j] + b;
+							}
+							else{
+								imOut[i][j] = imIn[i][j];
+							}
+						}
+						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						{
+							imOut[i][j] = imIn[i][j] & c;
+						}
+
+					break;
 				}
 			}
-			else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+			else
 			{
-				imOut[i][j] = imIn[i][j] & 254;
+				imOut[i][j] = imIn[i][j];
 			}
+
 				
 		}
 		
@@ -247,11 +379,19 @@ int main(int argc, char **argv)
 
 	ImageBase ImInserted(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
 	ImageBase ImRand2(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
-	getSequence(38, imIn.getHeight(), imIn.getHeight(), ImRand2);
-	insertMessage(imIn, ImRand2, ImInserted);
-	ImInserted.save("testInsert");
+	ImageBase ImInsertedDechiffree(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
+	getSequence(38, imIn.getHeight(), imIn.getHeight(), 	);
+	int k = 7; //bits range from 0 to 7, k will be set a 7 if it is greater than 7;
+	insertMessage(ImOut, ImRand2, ImInserted, k);
+	ImInserted.save("testInsertChiffree");
+	ImInserted.HistoSave(ImInserted.Histo(), "ImageMarquee.dat");
 
+	std::cout <<  "PSNR apres insertion au bit de rang  : " << k+1  << "\n --> " << calcPSNR(imIn, ImInserted) << std::endl;
 
+	XorCrypt(ImInserted, ImRand, ImInsertedDechiffree);
+	
+
+	ImInsertedDechiffree.save("imageMarqueeDechifree.pgm");
 
 	return 0;
 }
