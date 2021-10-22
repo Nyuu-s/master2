@@ -1,6 +1,10 @@
 #include "ImageBase.h"
 #include <stdio.h>
 #include<iostream>
+<<<<<<< HEAD
+#include <cstdlib>
+=======
+>>>>>>> 4c887c5cfe9d09b32b02873555bcf1ebb11f67b8
 #include<cmath>
 
 enum colorSpace{ RBG_YCRCB, YCRCB_RGB};
@@ -323,6 +327,91 @@ void insertMessage(ImageBase& imIn,ImageBase& imMSG,  ImageBase& imOut, int k){
 	
 }
 
+<<<<<<< HEAD
+unsigned int predictPixel(int i, int j, ImageBase& imIn)
+{
+	unsigned int left = imIn[i][j-1];
+	unsigned int up = imIn[i-1][j];	
+	unsigned int upLeft = imIn[i-1][j-1];
+
+	return (left + up + upLeft) / 3;
+}
+
+ unsigned int InvertedMSB( unsigned int k)
+{
+	int b = (k & 128);
+	if(b != 0){
+		k = k - 128;
+	}
+	else{
+		k = k + 128;
+	}
+	
+	
+	
+	return k;
+	
+}
+
+unsigned int InvertedmaskMSB( unsigned int k)
+{	
+	unsigned mask = (1 << 7);
+	unsigned int res;
+	
+	if(k & (mask)){
+		mask = ~mask;
+		res = k & mask;
+		
+	}
+	else
+	{
+		res = k | mask;
+	}
+	
+	
+	
+	return res;
+	
+}
+
+void reconstructImage( ImageBase& imIn, ImageBase& imOut)
+{
+
+	for(int i=0; i<imIn.getHeight(); i++)
+		for(int j=0; j<imIn.getWidth(); j++)
+		{
+			//if((i == 0 || j == 0)){
+				imOut[i][j] = imIn[i][j];
+			//}
+		}
+
+	imOut.save("TESTINTERMEDIAIRE");
+
+	for(int i=1; i< imIn.getHeight(); i++){
+		for(int j=1; j< imIn.getWidth(); j++){
+
+			unsigned int p_i = imIn[i][j];
+			unsigned int inv_p_i = InvertedmaskMSB(imIn[i][j]);
+			unsigned int pred_i = predictPixel(i, j, imOut);
+			int a = pred_i - p_i;
+			int b = pred_i - inv_p_i;
+			std::cout << pred_i << " " << inv_p_i << " " << p_i << std::endl;
+			
+			if( (std::abs(a) < (std::abs(b)))  ){
+				imOut[i][j] = p_i;
+			}
+			else
+			{
+				imOut[i][j] = inv_p_i;
+			}
+
+		}
+	}
+}
+
+
+=======
+>>>>>>> 4c887c5cfe9d09b32b02873555bcf1ebb11f67b8
 int main(int argc, char **argv)
 {
 	///////////////////////////////////////// Exemple d'un seuillage d'image
@@ -380,7 +469,15 @@ int main(int argc, char **argv)
 	ImageBase ImInserted(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
 	ImageBase ImRand2(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
 	ImageBase ImInsertedDechiffree(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
+<<<<<<< HEAD
+	ImageBase ImInsertedDechiffree2(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
+
+	XorCrypt(imIn, ImRand, ImOut);
+
+	getSequence(38, imIn.getHeight(), imIn.getHeight(), ImRand2	);
+=======
 	getSequence(38, imIn.getHeight(), imIn.getHeight(), 	);
+>>>>>>> 4c887c5cfe9d09b32b02873555bcf1ebb11f67b8
 	int k = 7; //bits range from 0 to 7, k will be set a 7 if it is greater than 7;
 	insertMessage(ImOut, ImRand2, ImInserted, k);
 	ImInserted.save("testInsertChiffree");
@@ -388,10 +485,26 @@ int main(int argc, char **argv)
 
 	std::cout <<  "PSNR apres insertion au bit de rang  : " << k+1  << "\n --> " << calcPSNR(imIn, ImInserted) << std::endl;
 
+<<<<<<< HEAD
+
+	
+
+
+	XorCrypt(ImInserted, ImRand, ImInsertedDechiffree);
+
+
+	ImInsertedDechiffree.save("imageMarqueeDechifree.pgm");
+
+	reconstructImage(ImInsertedDechiffree, ImInsertedDechiffree2);
+
+	ImInsertedDechiffree2.save("reconstrctuionPreictive.pgm");
+
+=======
 	XorCrypt(ImInserted, ImRand, ImInsertedDechiffree);
 	
 
 	ImInsertedDechiffree.save("imageMarqueeDechifree.pgm");
 
+>>>>>>> 4c887c5cfe9d09b32b02873555bcf1ebb11f67b8
 	return 0;
 }
