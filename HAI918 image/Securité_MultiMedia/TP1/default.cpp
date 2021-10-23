@@ -1,10 +1,9 @@
 #include "ImageBase.h"
 #include <stdio.h>
 #include<iostream>
-<<<<<<< HEAD
+
 #include <cstdlib>
-=======
->>>>>>> 4c887c5cfe9d09b32b02873555bcf1ebb11f67b8
+
 #include<cmath>
 
 enum colorSpace{ RBG_YCRCB, YCRCB_RGB};
@@ -32,7 +31,7 @@ double calcPSNR(ImageBase &image1, ImageBase &image2){
 	return (10 * log10(pow(255,2) / calcEQM(image1, image2) ));
 }
 
-int getSequence(unsigned int key, int h, int w, ImageBase &output){
+int getSequence(unsigned int key, int h, int w, ImageBase &output){  // surcharge 1 bit par pixel (pour insertion)
 		for (int i = 0; i < h; i++)
 			for (int j = 0; j < w; j++)
 			{
@@ -122,11 +121,6 @@ void XorCrypt(ImageBase &ImgIn, ImageBase &ImgRand, ImageBase &output ){
 
 
 double Entropy(ImageBase &imIn){
-// 	somme = 0
-// Pour i de 0 à 256   //Histogramme des niveaux de gris entre 0 et 256 donc
-//    pi = histogramme[i] / taille_image
-//    somme = somme -  pi*(log(pi)/log(2));
-// retourner somme
 	
 	double sum = 0.0;
 	double p_i = 0;
@@ -178,15 +172,15 @@ void insertMessage(ImageBase& imIn,ImageBase& imMSG,  ImageBase& imOut, int k){
 			if(!(i == 0 || j == 0)){ // for xor image
 
 				
-				int b = pow(2,k);
-				int c = 255 - b;
-				int a = imMSG[i][j] & b;
+				int bit_rank = pow(2,k);
+				int bit_diff = 255 - bit_rank;
+				int mask = imMSG[i][j] & bit_rank;
 				switch (k)
 				{
 				case 0:
 						
 																//if bit from message == 1 	
-						if(a == 1){
+						if(mask == 1){
 							if((imIn[i][j] & 1) != 1){ 			// check if current lsb is already 1 else add 1 to number
 								imOut[i][j] = imIn[i][j] + 1;
 							}
@@ -196,119 +190,119 @@ void insertMessage(ImageBase& imIn,ImageBase& imMSG,  ImageBase& imOut, int k){
 						}
 						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
 						{
-							imOut[i][j] = imIn[i][j] & c;
+							imOut[i][j] = imIn[i][j] & bit_diff;
 						}
 					break;
-				case 1:
+				case 1:											// same as above for each bit
 						
-																//if bit from message == 1 	
-						if(a == 1){
-							if((imIn[i][j] & b) != 1){ 			
-								imOut[i][j] = imIn[i][j] + b;
+																
+						if(mask == 1){
+							if((imIn[i][j] & bit_rank) != 1){ 			
+								imOut[i][j] = imIn[i][j] + bit_rank;
 							}
 							else{
 								imOut[i][j] = imIn[i][j];
 							}
 						}
-						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						else										
 						{
-							imOut[i][j] = imIn[i][j] & c;
+							imOut[i][j] = imIn[i][j] & bit_diff;
 						}
 					break;
 				case 2:
 						
-																//if bit from message == 1 	
-						if(a == 1){
-							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
-								imOut[i][j] = imIn[i][j] + b;
+																
+						if(mask == 1){
+							if((imIn[i][j] & bit_rank) != 1){ 			
+								imOut[i][j] = imIn[i][j] + bit_rank;
 							}
 							else{
 								imOut[i][j] = imIn[i][j];
 							}
 						}
-						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						else										
 						{
-							imOut[i][j] = imIn[i][j] & c;
+							imOut[i][j] = imIn[i][j] & bit_diff;
 						}
 					break;
 				case 3:
 						
-																//if bit from message == 1 	
-						if(a == 1){
-							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
-								imOut[i][j] = imIn[i][j] + b;
+																	
+						if(mask == 1){
+							if((imIn[i][j] & bit_rank) != 1){ 			
+								imOut[i][j] = imIn[i][j] + bit_rank;
 							}
 							else{
 								imOut[i][j] = imIn[i][j];
 							}
 						}
-						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						else										
 						{
-							imOut[i][j] = imIn[i][j] & b;
+							imOut[i][j] = imIn[i][j] & bit_rank;
 						}
 					break;
 				case 4:
 						
-																//if bit from message == 1 	
-						if(a == 1){
-							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
-								imOut[i][j] = imIn[i][j] + b;
+																	
+						if(mask == 1){
+							if((imIn[i][j] & bit_rank) != 1){ 			
+								imOut[i][j] = imIn[i][j] + bit_rank;
 							}
 							else{
 								imOut[i][j] = imIn[i][j];
 							}
 						}
-						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						else										
 						{
-							imOut[i][j] = imIn[i][j] & c;
+							imOut[i][j] = imIn[i][j] & bit_diff;
 						}
 					break;
 				case 5:
 						
-																//if bit from message == 1 	
-						if(a == 1){
-							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
-								imOut[i][j] = imIn[i][j] + b;
+																
+						if(mask == 1){
+							if((imIn[i][j] & bit_rank) != 1){ 			
+								imOut[i][j] = imIn[i][j] + bit_rank;
 							}
 							else{
 								imOut[i][j] = imIn[i][j];
 							}
 						}
-						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						else										
 						{
-							imOut[i][j] = imIn[i][j] & c;
+							imOut[i][j] = imIn[i][j] & bit_diff;
 						}
 					break;
 				case 6:
 						
-																//if bit from message == 1 	
-						if(a == 1){
-							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
-								imOut[i][j] = imIn[i][j] + b;
+																	
+						if(mask == 1){
+							if((imIn[i][j] & bit_rank) != 1){ 			
+								imOut[i][j] = imIn[i][j] + bit_rank;
 							}
 							else{
 								imOut[i][j] = imIn[i][j];
 							}
 						}
-						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						else										
 						{
-							imOut[i][j] = imIn[i][j] & c;
+							imOut[i][j] = imIn[i][j] & bit_diff;
 						}
 					break;
 				default:
 						
-																//if bit from message == 1 	
-						if(a == 1){
-							if((imIn[i][j] & b) != 1){ 			// check if current lsb is already 1 else add 1 to number
-								imOut[i][j] = imIn[i][j] + b;
+																 	
+						if(mask == 1){
+							if((imIn[i][j] & bit_rank) != 1){ 			
+								imOut[i][j] = imIn[i][j] + bit_rank;
 							}
 							else{
 								imOut[i][j] = imIn[i][j];
 							}
 						}
-						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						else										
 						{
-							imOut[i][j] = imIn[i][j] & c;
+							imOut[i][j] = imIn[i][j] & bit_diff;
 						}
 
 					break;
@@ -319,15 +313,13 @@ void insertMessage(ImageBase& imIn,ImageBase& imMSG,  ImageBase& imOut, int k){
 				imOut[i][j] = imIn[i][j];
 			}
 
-				
 		}
 		
-		/* code */
 	}
 	
 }
 
-<<<<<<< HEAD
+
 unsigned int predictPixel(int i, int j, ImageBase& imIn)
 {
 	unsigned int left = imIn[i][j-1];
@@ -337,23 +329,21 @@ unsigned int predictPixel(int i, int j, ImageBase& imIn)
 	return (left + up + upLeft) / 3;
 }
 
+//fonction utilisé lors de debug
  unsigned int InvertedMSB( unsigned int k)
 {
-	int b = (k & 128);
-	if(b != 0){
+	int mask = (k & 128);
+	if(mask != 0){
 		k = k - 128;
 	}
 	else{
 		k = k + 128;
 	}
-	
-	
-	
 	return k;
 	
 }
 
-unsigned int InvertedmaskMSB( unsigned int k)
+unsigned int InvertedMaskMSB( unsigned int k)
 {	
 	unsigned mask = (1 << 7);
 	unsigned int res;
@@ -367,9 +357,6 @@ unsigned int InvertedmaskMSB( unsigned int k)
 	{
 		res = k | mask;
 	}
-	
-	
-	
 	return res;
 	
 }
@@ -380,24 +367,24 @@ void reconstructImage( ImageBase& imIn, ImageBase& imOut)
 	for(int i=0; i<imIn.getHeight(); i++)
 		for(int j=0; j<imIn.getWidth(); j++)
 		{
-			//if((i == 0 || j == 0)){
+			if((i == 0 || j == 0)){
 				imOut[i][j] = imIn[i][j];
-			//}
+			}
 		}
 
-	imOut.save("TESTINTERMEDIAIRE");
+	
 
 	for(int i=1; i< imIn.getHeight(); i++){
 		for(int j=1; j< imIn.getWidth(); j++){
 
 			unsigned int p_i = imIn[i][j];
-			unsigned int inv_p_i = InvertedmaskMSB(imIn[i][j]);
+			unsigned int inv_p_i = InvertedMaskMSB(imIn[i][j]);
 			unsigned int pred_i = predictPixel(i, j, imOut);
-			int a = pred_i - p_i;
-			int b = pred_i - inv_p_i;
-			std::cout << pred_i << " " << inv_p_i << " " << p_i << std::endl;
+			int distance_pi = pred_i - p_i;
+			int distance_inv_pi = pred_i - inv_p_i;
 			
-			if( (std::abs(a) < (std::abs(b)))  ){
+			
+			if( (std::abs(distance_pi) < (std::abs(distance_inv_pi)))  ){
 				imOut[i][j] = p_i;
 			}
 			else
@@ -409,102 +396,127 @@ void reconstructImage( ImageBase& imIn, ImageBase& imOut)
 	}
 }
 
+void pretraitement(ImageBase& imIn, ImageBase& imOut)
+{
 
-=======
->>>>>>> 4c887c5cfe9d09b32b02873555bcf1ebb11f67b8
+
+	for (int i = 0; i < imIn.getHeight(); i++)
+	{
+		for (int j = 0; j < imIn.getWidth(); j++)
+		{
+
+			unsigned int p_i = imIn[i][j];
+			unsigned int inv_p_i = InvertedMaskMSB(imIn[i][j]);
+			unsigned int pred_i = predictPixel(i, j, imOut);
+			int distance_pi = pred_i - p_i;
+			int distance_inv_pi = pred_i - inv_p_i;
+
+			if( std::abs(distance_pi) >= abs(distance_inv_pi) ){
+				if(p_i < 128){
+					imOut[i][j] = pred_i - 63;
+				}
+				else
+				{
+					imOut[i][j] = pred_i + 63;
+				}
+			}
+			else
+			{
+				imOut[i][j] = p_i;
+			}
+		}
+		
+	}
+	
+}
+
+
+
 int main(int argc, char **argv)
 {
 	///////////////////////////////////////// Exemple d'un seuillage d'image
 	char cNomImgLue[250], cNomImgEcrite[250];
 	
   
-	if (argc != 3) 
+	if (argc != 2) 
 	{
-		printf("Usage: ImageIn.pgm ImageOut.pgm Seuil \n"); 
+		printf("Usage: ImageIn.pgm  \n"); 
 		return 1;
 	}
 	sscanf (argv[1],"%s",cNomImgLue) ;
-	sscanf (argv[2],"%s",cNomImgEcrite);
 	
 	
 	
-	//ImageBase imIn, imOut;
+	
+	//ImageBase imIn;
 	ImageBase imIn;
 	imIn.load(cNomImgLue);
 	
-	ImageBase ImRand(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
-	ImageBase ImOut(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
-	ImageBase ImOutDecrypt(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
-	
-	getSequence(255, imIn.getHeight(), imIn.getHeight(), imIn.getColor(), ImRand);
-	XorCrypt(imIn, ImRand, ImOut);
+	ImageBase ImRandom(				imIn.getHeight(), imIn.getWidth(), imIn.getColor()); //#  Images aléatoires
+	ImageBase ImRandom2(			imIn.getHeight(), imIn.getWidth(), imIn.getColor()); //#
 
-	XorCrypt(ImOut, ImRand, ImOutDecrypt);
+	ImageBase ImChiffree(			imIn.getHeight(), imIn.getWidth(), imIn.getColor());// Image chiffrée
+	ImageBase ImChiffree2(			imIn.getHeight(), imIn.getWidth(), imIn.getColor());// Image chifrée avec une autre clé
+	ImageBase ImChiffree3(			imIn.getHeight(), imIn.getWidth(), imIn.getColor());// Image chiffrée pour la partie reconstruction
+	ImageBase ImDechiffree(			imIn.getHeight(), imIn.getWidth(), imIn.getColor());// Image déchiffrée
+
+	ImageBase ImInserted(			imIn.getHeight(), imIn.getWidth(), imIn.getColor());// Image apres insertion d'un message LSB
+	ImageBase ImInserted2(			imIn.getHeight(), imIn.getWidth(), imIn.getColor());// Image apres insertion d'un message MSB
+	ImageBase ImInsertedDechiffree(	imIn.getHeight(), imIn.getWidth(), imIn.getColor());// Image déchiffrée apres insertion
+	ImageBase ImReconstructed(		imIn.getHeight(), imIn.getWidth(), imIn.getColor());// Image reconstruite avec prédiction
+	ImageBase ImPretraitement(		imIn.getHeight(), imIn.getWidth(), imIn.getColor());// Image avec source prétraité
+
+	ImageBase ImBinaryPlane(		imIn.getWidth(), imIn.getWidth(), imIn.getColor());// Image d'un plan binaire
 
 
-	ImageBase ImOut2(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
-	getSequence(38, imIn.getHeight(), imIn.getHeight(), imIn.getColor(), ImRand);
-	XorCrypt(imIn, ImRand, ImOut2);
-	std::cout <<  "PSNR des deux images : " << calcPSNR(ImOut, ImOut2) << std::endl;
+	// Chiffrement Dechiffrement 
+	getSequence(255, imIn.getHeight(), imIn.getHeight(), imIn.getColor(), ImRandom);
+	XorCrypt(imIn, ImRandom, ImChiffree);
+	XorCrypt(ImChiffree, ImRandom, ImDechiffree);
 
+	// Chiffrement avec une autre clé
+	getSequence(38, imIn.getHeight(), imIn.getHeight(), imIn.getColor(), ImRandom);
+	XorCrypt(imIn, ImRandom, ImChiffree2);
 
+	//plans binaires k[0-7]
+	planBinaire(1, ImChiffree, ImBinaryPlane);
 
-	std::cout <<  "PSNR des images source et déchiffée : " << calcPSNR(imIn, ImOutDecrypt) << std::endl;
+	//Pretraitement de l'image avant insertion, a commenté pour essayer sans prétraitement
+	pretraitement(imIn, ImPretraitement);
+	XorCrypt(ImPretraitement, ImRandom, ImChiffree3);
 
-	ImOut.save(cNomImgEcrite);
-	ImOutDecrypt.save("output_decrypt.pgm");
+	//Pretraitement de l'image avant insertion, a décommenté pour essayer sans prétraitement
+	//XorCrypt(imIn, ImRandom, ImChiffree);
 
+	//k[0-7]
+	//Insertion dans l'image source (plan LSB)
+	int k = 0;
+	getSequence(38, imIn.getHeight(), imIn.getHeight(), ImRandom2	);
+	insertMessage(imIn, ImRandom2, ImInserted, k);
+
+	//insertion dans image chiffree
+	k = 7;
+	insertMessage(ImChiffree3, ImRandom2, ImInserted2, k);
+	XorCrypt(ImInserted2, ImRandom, ImInsertedDechiffree);
+	reconstructImage(ImInsertedDechiffree, ImReconstructed);
+
+	ImChiffree.save("ImageChiffree.pgm");
+	ImDechiffree.save("ImageDechiffree.pgm");
+	ImBinaryPlane.save("PlanBinaire.ppm");
+	ImInserted.save("ImageInsertionLSB.pgm");
+	ImInserted2.save("ImageInsertionChiffree.pgm");
+	ImInserted2.HistoSave(ImInserted2.Histo(), "ImageMarquee.dat");
+	ImInsertedDechiffree.save("ImageInsertionDechifree.pgm");
+	ImReconstructed.save("ImageReconstrctuionPredictive.pgm");
+	// histogramme a affiché avec gnuplot de l'image source et chiffré
 	imIn.HistoSave(imIn.Histo(), "ImageClaire.dat");
+	ImChiffree.HistoSave(ImChiffree.Histo(), "ImageChirffree .dat");
 
-	ImOut.HistoSave(ImOut.Histo(), "ImageChirffree .dat");
-	std::cout << Entropy(imIn) << "  " << Entropy(ImOut) << std::endl;
+	std::cout <<  "PSNR des deux images : " << calcPSNR(ImChiffree, ImChiffree2) << std::endl;
+	std::cout <<  "PSNR des images source et déchiffée : " << calcPSNR(imIn, ImDechiffree) << std::endl;
+	std::cout << Entropy(imIn) << "  " << Entropy(ImChiffree) << std::endl;
+	std::cout <<  "PSNR apres insertion au bit de rang  : " << k+1  << "\n --> " << calcPSNR(imIn, ImInserted2) << std::endl;
+	std::cout <<  "PSNR apres reconstruction  : "  << "\n --> " << calcPSNR(imIn, ImReconstructed) << std::endl;
 
-
-
-	ImageBase imgBinary(imIn.getWidth(), imIn.getWidth(), imIn.getColor());
-	planBinaire(1, ImOut, imgBinary);
-	imgBinary.save("PlanBinaire.ppm");
-
-
-	ImageBase ImInserted(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
-	ImageBase ImRand2(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
-	ImageBase ImInsertedDechiffree(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
-<<<<<<< HEAD
-	ImageBase ImInsertedDechiffree2(imIn.getHeight(), imIn.getWidth(), imIn.getColor());
-
-	XorCrypt(imIn, ImRand, ImOut);
-
-	getSequence(38, imIn.getHeight(), imIn.getHeight(), ImRand2	);
-=======
-	getSequence(38, imIn.getHeight(), imIn.getHeight(), 	);
->>>>>>> 4c887c5cfe9d09b32b02873555bcf1ebb11f67b8
-	int k = 7; //bits range from 0 to 7, k will be set a 7 if it is greater than 7;
-	insertMessage(ImOut, ImRand2, ImInserted, k);
-	ImInserted.save("testInsertChiffree");
-	ImInserted.HistoSave(ImInserted.Histo(), "ImageMarquee.dat");
-
-	std::cout <<  "PSNR apres insertion au bit de rang  : " << k+1  << "\n --> " << calcPSNR(imIn, ImInserted) << std::endl;
-
-<<<<<<< HEAD
-
-	
-
-
-	XorCrypt(ImInserted, ImRand, ImInsertedDechiffree);
-
-
-	ImInsertedDechiffree.save("imageMarqueeDechifree.pgm");
-
-	reconstructImage(ImInsertedDechiffree, ImInsertedDechiffree2);
-
-	ImInsertedDechiffree2.save("reconstrctuionPreictive.pgm");
-
-=======
-	XorCrypt(ImInserted, ImRand, ImInsertedDechiffree);
-	
-
-	ImInsertedDechiffree.save("imageMarqueeDechifree.pgm");
-
->>>>>>> 4c887c5cfe9d09b32b02873555bcf1ebb11f67b8
 	return 0;
 }
