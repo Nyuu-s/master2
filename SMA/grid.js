@@ -8,6 +8,7 @@ class Cell{
         this.f = 0;
         this.h = 0;
         this.neighbors = [];
+        this.previous = undefined;
     }
 
     addNeighbors(){

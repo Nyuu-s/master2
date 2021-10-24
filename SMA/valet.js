@@ -19,12 +19,15 @@ let a1;
 let v1;
 
 function keyPressed(){
+  a1.toDraw = [];
+
   if(keyCode == UP_ARROW){
-    a1.move(direction.UP, 2);
+    a1.move(direction.UP, 1);
   }
   else if(keyCode == DOWN_ARROW){
 
     a1.move(direction.DOWN, 1);
+    return;
   }
   else if(keyCode == RIGHT_ARROW){
 
@@ -34,10 +37,13 @@ function keyPressed(){
 
     a1.move(direction.LEFT , 1);
   }
+  else if(keyCode == CONTROL){
 
-  //create wall (a* debug)
-  if(keyCode == SHIFT ){
+    a1.findPath(a1.cell, v1.cell);
+  }
+  else if(keyCode == SHIFT ){
     let c = getCell(floor(mouseX/res), floor(mouseY/res));
+  
     c.type = 1;
   }
 }
@@ -86,6 +92,10 @@ function setup(){
   a1 = new Agent(grid[26],1);
   v1 = new Voiture(grid[0]);
 
+  a1.move(direction.DOWN, 2);
+  console.log(a1.cell, v1.cell);
+  a1.findPath(a1.cell, v1.cell);
+
 }
 
 function draw(){
@@ -94,9 +104,17 @@ function draw(){
     grid[i].drawCell();
   }
   frameRate(10);
+  for(let i =0; i<a1.toDraw.length;i++){
+    let b = a1.toDraw[i]
+    fill(255,0,255);
+    rect(b.i*res, b.j*res, res, res);
+  }
   
+
   a1.show();
   v1.show();
+
+
   
     
   
