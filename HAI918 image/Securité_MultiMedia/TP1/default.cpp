@@ -31,7 +31,8 @@ double calcPSNR(ImageBase &image1, ImageBase &image2){
 	return (10 * log10(pow(255,2) / calcEQM(image1, image2) ));
 }
 
-int getSequence(unsigned int key, int h, int w, ImageBase &output){  // surcharge 1 bit par pixel (pour insertion)
+//genere un imae aléatoire 1 bit par pixel (insertion)
+int getSequence(unsigned int key, int h, int w, ImageBase &output){  
 		for (int i = 0; i < h; i++)
 			for (int j = 0; j < w; j++)
 			{
@@ -41,6 +42,7 @@ int getSequence(unsigned int key, int h, int w, ImageBase &output){  // surcharg
 			}
 }
 
+//genere une image aléatoirement (8 bit par pixels)
 int getSequence(unsigned int key, int h, int w, bool color, ImageBase &output){
 	srand(key);
 
@@ -77,7 +79,7 @@ int getSequence(unsigned int key, int h, int w, bool color, ImageBase &output){
 
 void XorCrypt(ImageBase &ImgIn, ImageBase &ImgRand, ImageBase &output ){
 	
-	switch (ImgIn.getColor())
+	switch (ImgIn.getColor()) //gere les image couleurs (abandonné par la suite )
 	{
 	case true:
 		for (int i = 0; i < ImgIn.getHeight(); i++)
@@ -122,6 +124,7 @@ void XorCrypt(ImageBase &ImgIn, ImageBase &ImgRand, ImageBase &output ){
 
 double Entropy(ImageBase &imIn){
 	
+
 	double sum = 0.0;
 	double p_i = 0;
 	Histogram hist = imIn.Histo();
@@ -137,6 +140,8 @@ double Entropy(ImageBase &imIn){
 }
 
 void planBinaire(int k, ImageBase &imIn, ImageBase &output){
+
+	// ne garde que le bit correspondant ( k ) dans un pixel
 
 	for (int i = 0; i < imIn.getHeight(); i++)
 	{
@@ -162,7 +167,7 @@ void planBinaire(int k, ImageBase &imIn, ImageBase &output){
 
 void insertMessage(ImageBase& imIn,ImageBase& imMSG,  ImageBase& imOut, int k){
 	if(k > 7){
-		k = 7;
+		k = 7; // evite de rentrer un k trop grand
 	}
 	
 	for (int i = 0; i < imIn.getHeight(); i++)
@@ -181,19 +186,19 @@ void insertMessage(ImageBase& imIn,ImageBase& imMSG,  ImageBase& imOut, int k){
 						
 																//if bit from message == 1 	
 						if(mask == 1){
-							if((imIn[i][j] & 1) != 1){ 			// check if current lsb is already 1 else add 1 to number
+							if((imIn[i][j] & 1) != 1){ 			// regarde si le lsb est deja a 1 sinon ajoute 1
 								imOut[i][j] = imIn[i][j] + 1;
 							}
 							else{
 								imOut[i][j] = imIn[i][j];
 							}
 						}
-						else									//if bit from message == 0 take pixel value & 254 to force lsb to be 0	
+						else									//si le bit == 0 prendre valeur & 254 pour forcer le bit a 0	
 						{
 							imOut[i][j] = imIn[i][j] & bit_diff;
 						}
 					break;
-				case 1:											// same as above for each bit
+				case 1:											// comme au dessus mais pour un autre rang
 						
 																
 						if(mask == 1){
@@ -319,7 +324,7 @@ void insertMessage(ImageBase& imIn,ImageBase& imMSG,  ImageBase& imOut, int k){
 	
 }
 
-
+//prediction sur les 3 pixel precedant
 unsigned int predictPixel(int i, int j, ImageBase& imIn)
 {
 	unsigned int left = imIn[i][j-1];
@@ -332,6 +337,8 @@ unsigned int predictPixel(int i, int j, ImageBase& imIn)
 //fonction utilisé lors de debug
  unsigned int InvertedMSB( unsigned int k)
 {
+
+	//si le bit MSB est a 1 ou soustrait 128 pour le metre a 0 ou l'inverse
 	int mask = (k & 128);
 	if(mask != 0){
 		k = k - 128;
@@ -345,6 +352,7 @@ unsigned int predictPixel(int i, int j, ImageBase& imIn)
 
 unsigned int InvertedMaskMSB( unsigned int k)
 {	
+	// utilse un mask pour inversé le MSB
 	unsigned mask = (1 << 7);
 	unsigned int res;
 	
@@ -363,6 +371,7 @@ unsigned int InvertedMaskMSB( unsigned int k)
 
 void reconstructImage( ImageBase& imIn, ImageBase& imOut)
 {
+	//met la premiere ligne et colonne dans l'image de sortie
 
 	for(int i=0; i<imIn.getHeight(); i++)
 		for(int j=0; j<imIn.getWidth(); j++)
@@ -377,12 +386,14 @@ void reconstructImage( ImageBase& imIn, ImageBase& imOut)
 	for(int i=1; i< imIn.getHeight(); i++){
 		for(int j=1; j< imIn.getWidth(); j++){
 
+
 			unsigned int p_i = imIn[i][j];
 			unsigned int inv_p_i = InvertedMaskMSB(imIn[i][j]);
 			unsigned int pred_i = predictPixel(i, j, imOut);
 			int distance_pi = pred_i - p_i;
 			int distance_inv_pi = pred_i - inv_p_i;
 			
+			//compare la distance entre le pixel predit et le pixel courant et la distance du pixel predit avec l'inverse du pixel courant
 			
 			if( (std::abs(distance_pi) < (std::abs(distance_inv_pi)))  ){
 				imOut[i][j] = p_i;
@@ -500,6 +511,8 @@ int main(int argc, char **argv)
 	XorCrypt(ImInserted2, ImRandom, ImInsertedDechiffree);
 	reconstructImage(ImInsertedDechiffree, ImReconstructed);
 
+	//creation des images
+
 	ImChiffree.save("ImageChiffree.pgm");
 	ImDechiffree.save("ImageDechiffree.pgm");
 	ImBinaryPlane.save("PlanBinaire.ppm");
@@ -512,9 +525,11 @@ int main(int argc, char **argv)
 	imIn.HistoSave(imIn.Histo(), "ImageClaire.dat");
 	ImChiffree.HistoSave(ImChiffree.Histo(), "ImageChirffree .dat");
 
+	//sortie console
+
 	std::cout <<  "PSNR des deux images : " << calcPSNR(ImChiffree, ImChiffree2) << std::endl;
 	std::cout <<  "PSNR des images source et déchiffée : " << calcPSNR(imIn, ImDechiffree) << std::endl;
-	std::cout << Entropy(imIn) << "  " << Entropy(ImChiffree) << std::endl;
+	std::cout <<  "Entropie image source : " << Entropy(imIn) << " \nEntropie image chiffrée : " << Entropy(ImChiffree) << std::endl;
 	std::cout <<  "PSNR apres insertion au bit de rang  : " << k+1  << "\n --> " << calcPSNR(imIn, ImInserted2) << std::endl;
 	std::cout <<  "PSNR apres reconstruction  : "  << "\n --> " << calcPSNR(imIn, ImReconstructed) << std::endl;
 
