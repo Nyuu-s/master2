@@ -4,6 +4,7 @@
 #include"BasicIO.h"
 #include"geometryengine.h"
 #include"componnent.h"
+#include"geometryengine.h"
 
 class Mesh : public Component
 {
@@ -12,16 +13,22 @@ public:
     unsigned int indexNumber;
     unsigned int id;
 
-    GLushort* indices;
+    std::vector<GLushort> indices;
     std::vector<VertexData> vertices;
+
+    QOpenGLBuffer vertexBuffer;
+    QOpenGLBuffer indexBuffer;
 
 
     Mesh();
-    Mesh(std::vector<VertexData>& vertices, GLushort indexes[], unsigned int vertexCount, unsigned int indexCount);
-    Mesh(std::vector<VertexData>& vertices,  unsigned int vertexCount);
+    Mesh(std::vector<VertexData>& vertices, std::vector<GLushort>& indexes);
+    Mesh(std::vector<VertexData>& vertices);
+    ~Mesh();
+    void Draw(QOpenGLShaderProgram& shaderProgram);
     static std::vector<QVector3D> loadOBJ(std::string filename);
 
-    VertexData* toArray(VertexData* arr);
+    VertexData* VertextoArray(VertexData* arr);
+    unsigned int* IndextoArray(unsigned int* arr);
 
     unsigned int getID();
     void printVertices();

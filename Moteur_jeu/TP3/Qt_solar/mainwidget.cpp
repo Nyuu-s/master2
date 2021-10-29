@@ -62,12 +62,84 @@
 #include "graph.h"
 #include<BasicIO.h>
 
+
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
     angularSpeed(0)
+
 {
+
+    //initSphereGeometry(this->sphere);
+
+}
+
+
+void MainWidget::initGraph(){
+
+    geometries = new GeometryEngine;
+    gameObject* World =  new gameObject(Transform(QQuaternion(), QVector3D(), 1), 1, 1, "world");
+    gameObject* Soleil = new gameObject(Transform(QQuaternion(), QVector3D(), 1),9,9, "soleil");
+//    gameObject Mercure = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
+//    gameObject Venus = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
+//    gameObject Mars = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
+//    gameObject Terre = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
+
+
+
+
+
+    std::vector<VertexData> v;
+    std::vector<GLushort> index;
+
+    //this->initSphereGeometry(v, index);
+    GeometryEngine::initCubeGeometry(64, 64, 1, 1,v, index);
+
+    Mesh *soleilMesh = new Mesh(v, index);
+
+    soleilMesh->id = 777;
+
+    World->id = 666;
+    Soleil->id = 1;
+    Soleil->addComponent(soleilMesh);
+    World->addChild(*Soleil);
+
+    graphScene = new Graph(World);
+
+    qDebug() << graphScene->root->id << " " << graphScene->root->name.c_str();
+    //potentiel probleme : si tout les objet on le meme mesh apres une transformation tous les mesh sont mis a jour ?
+    //maybe faire x instance de planet.
+//    Soleil.addComponent(planet);
+//    Mercure.addComponent(planet);
+//    Venus.addComponent(planet);
+//    Mars.addComponent(planet);
+//    Terre.addComponent(planet);
+
+
+//    Soleil.addChild(Mercure);
+//    Soleil.addChild(Venus);
+//    Soleil.addChild(Mars);
+//    Soleil.addChild(Terre);
+
+}
+
+void MainWidget::initSphereGeometry(std::vector<VertexData>& points, std::vector<GLushort>& indices){
+    std::string meshLocation = "../TP3/Qt_solar/sphere.obj";
+    std::vector<QVector3D> sphere(Mesh::loadOBJ(meshLocation));
+    points.reserve(sphere.size());
+    indices.reserve(sphere.size());
+
+    GLushort i = 0;
+    for ( auto a : sphere ) {
+        VertexData t = VertexData();
+        t.position = a;
+        //qDebug("%f, %f, %f hdshv", a.x(), a.y(), a.z());
+       // t.texCoord = ??
+        points.push_back(t);
+        indices.push_back(i++);
+    }
+
 }
 
 MainWidget::~MainWidget()
@@ -80,6 +152,7 @@ MainWidget::~MainWidget()
     delete snow;
     delete rock;
     delete geometries;
+    delete graphScene;
     doneCurrent();
 }
 
@@ -185,7 +258,11 @@ void MainWidget::initializeGL()
    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 //! [2]
 
-    geometries = new GeometryEngine;
+
+
+   // geometries = new GeometryEngine;
+
+    initGraph();
 
     // Use QBasicTimer because its faster than QTimer
     timer.start(12, this);
@@ -283,44 +360,7 @@ void MainWidget::paintGL()
 //! [6]
 //!
 //!
-    std::string meshLocation = "../TP3/Qt_solar/sphere.obj";
-    std::vector<QVector3D> sphere(Mesh::loadOBJ(meshLocation));
-    sphere.reserve(sphere.size());
-    std::vector<VertexData> sphereVertex(sphere.size());
-
-    for ( auto a : sphere ) {
-        VertexData t = VertexData();
-        t.position = a;
-       // t.texCoord = ??
-        sphereVertex.push_back(t);
-    }
-
-    gameObject World = gameObject(Transform(QQuaternion(), QVector3D(), 1), 1, 1);
-    gameObject Soleil = gameObject(Transform(QQuaternion(), QVector3D(), 1),9,9);
-    gameObject Mercure = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
-    gameObject Venus = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
-    gameObject Mars = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
-    gameObject Terre = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
-
-    World.addChild(Soleil);
-
-    Graph scene = Graph(World);
-
-    Mesh planet = Mesh(sphereVertex, sphereVertex.size());
-
-    Soleil.addComponent(planet);
-    Mercure.addComponent(planet);
-    Venus.addComponent(planet);
-    Mars.addComponent(planet);
-    Terre.addComponent(planet);
-
-
-    Soleil.addChild(Mercure);
-    Soleil.addChild(Venus);
-    Soleil.addChild(Mars);
-    Soleil.addChild(Terre);
-
-
+//! ../TP3/Qt_solar/sphere.obj
 
 
     // Use texture unit 0 which contains cube.png
@@ -328,7 +368,12 @@ void MainWidget::paintGL()
     program.setUniformValue("rock", 2);
     program.setUniformValue("snow", 3);
     program.setUniformValue("heightmap", 1);
+   // qDebug() << graphScene->root->id << " " << graphScene->root->name.c_str();
+    graphScene->draw_elements(program);
 
-    // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    // Draw plane geometry
+
+    //geometries->drawCubeGeometry(&program);
+
+   // geometries->drawSphereGeometry(&program);
 }

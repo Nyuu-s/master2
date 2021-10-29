@@ -56,6 +56,7 @@
 #include <QOpenGLBuffer>
 
 
+
 #include <QVector2D>
 #include <QVector3D>
 
@@ -71,15 +72,15 @@ public:
     GeometryEngine();
     virtual ~GeometryEngine();
 
-    void drawCubeGeometry(QOpenGLShaderProgram *program);
+    void drawCubeGeometry(QOpenGLShaderProgram *program, VertexData* vertices, GLushort* indices, int vertexNumber, int indexCount);
     void drawSphereGeometry(QOpenGLShaderProgram *program);
+    void static initCubeGeometry(int nH, int nW, int boardSizeX, int boardSizeY, std::vector<VertexData>& points, std::vector<GLushort>& indices);
+
 
 
 private:
-    void initCubeGeometry(int nH, int nW, int boardSizeX, int boardSizeY);
 
     void initSphereGeometry();
-
 
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;

@@ -56,7 +56,6 @@ SOURCES       = ../TP3/Qt_solar/main.cpp \
 		../TP3/Qt_solar/gameObject.cpp \
 		../TP3/Qt_solar/graph.cpp \
 		../TP3/Qt_solar/mesh.cpp \
-		../TP3/Qt_solar/stb_image.cpp \
 		../TP3/Qt_solar/transform.cpp \
 		../TP3/Qt_solar/mainwidget.cpp \
 		../TP3/Qt_solar/geometryengine.cpp qrc_models.cpp \
@@ -67,7 +66,6 @@ OBJECTS       = main.o \
 		gameObject.o \
 		graph.o \
 		mesh.o \
-		stb_image.o \
 		transform.o \
 		mainwidget.o \
 		geometryengine.o \
@@ -159,12 +157,10 @@ DIST          = ../TP3/Qt_solar/grass.png \
 		../TP3/Qt_solar/mainwidget.h \
 		../TP3/Qt_solar/geometryengine.h \
 		../TP3/Qt_solar/mesh.h \
-		../TP3/Qt_solar/stb_image.h \
 		../TP3/Qt_solar/transform.h ../TP3/Qt_solar/main.cpp \
 		../TP3/Qt_solar/gameObject.cpp \
 		../TP3/Qt_solar/graph.cpp \
 		../TP3/Qt_solar/mesh.cpp \
-		../TP3/Qt_solar/stb_image.cpp \
 		../TP3/Qt_solar/transform.cpp \
 		../TP3/Qt_solar/mainwidget.cpp \
 		../TP3/Qt_solar/geometryengine.cpp
@@ -356,8 +352,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../TP3/Qt_solar/models.qrc ../TP3/Qt_solar/shaders.qrc ../TP3/Qt_solar/textures.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../TP3/Qt_solar/BasicIO.h ../TP3/Qt_solar/componnent.h ../TP3/Qt_solar/gameObject.h ../TP3/Qt_solar/graph.h ../TP3/Qt_solar/mainwidget.h ../TP3/Qt_solar/geometryengine.h ../TP3/Qt_solar/mesh.h ../TP3/Qt_solar/stb_image.h ../TP3/Qt_solar/transform.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../TP3/Qt_solar/main.cpp ../TP3/Qt_solar/gameObject.cpp ../TP3/Qt_solar/graph.cpp ../TP3/Qt_solar/mesh.cpp ../TP3/Qt_solar/stb_image.cpp ../TP3/Qt_solar/transform.cpp ../TP3/Qt_solar/mainwidget.cpp ../TP3/Qt_solar/geometryengine.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../TP3/Qt_solar/BasicIO.h ../TP3/Qt_solar/componnent.h ../TP3/Qt_solar/gameObject.h ../TP3/Qt_solar/graph.h ../TP3/Qt_solar/mainwidget.h ../TP3/Qt_solar/geometryengine.h ../TP3/Qt_solar/mesh.h ../TP3/Qt_solar/transform.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../TP3/Qt_solar/main.cpp ../TP3/Qt_solar/gameObject.cpp ../TP3/Qt_solar/graph.cpp ../TP3/Qt_solar/mesh.cpp ../TP3/Qt_solar/transform.cpp ../TP3/Qt_solar/mainwidget.cpp ../TP3/Qt_solar/geometryengine.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -418,6 +414,12 @@ compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwidget.cpp
 moc_mainwidget.cpp: ../TP3/Qt_solar/mainwidget.h \
 		../TP3/Qt_solar/geometryengine.h \
+		../TP3/Qt_solar/graph.h \
+		../TP3/Qt_solar/gameObject.h \
+		../TP3/Qt_solar/transform.h \
+		../TP3/Qt_solar/BasicIO.h \
+		../TP3/Qt_solar/mesh.h \
+		../TP3/Qt_solar/componnent.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/edgar/Documents/M2/Moteur_jeu/build-gameengine-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/edgar/Documents/M2/Moteur_jeu/TP3/Qt_solar -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../TP3/Qt_solar/mainwidget.h -o moc_mainwidget.cpp
@@ -439,12 +441,20 @@ compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_heade
 ####### Compile
 
 main.o: ../TP3/Qt_solar/main.cpp ../TP3/Qt_solar/mainwidget.h \
-		../TP3/Qt_solar/geometryengine.h
+		../TP3/Qt_solar/geometryengine.h \
+		../TP3/Qt_solar/graph.h \
+		../TP3/Qt_solar/gameObject.h \
+		../TP3/Qt_solar/transform.h \
+		../TP3/Qt_solar/BasicIO.h \
+		../TP3/Qt_solar/mesh.h \
+		../TP3/Qt_solar/componnent.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../TP3/Qt_solar/main.cpp
 
 gameObject.o: ../TP3/Qt_solar/gameObject.cpp ../TP3/Qt_solar/gameObject.h \
 		../TP3/Qt_solar/transform.h \
 		../TP3/Qt_solar/BasicIO.h \
+		../TP3/Qt_solar/mesh.h \
+		../TP3/Qt_solar/geometryengine.h \
 		../TP3/Qt_solar/componnent.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o gameObject.o ../TP3/Qt_solar/gameObject.cpp
 
@@ -452,6 +462,8 @@ graph.o: ../TP3/Qt_solar/graph.cpp ../TP3/Qt_solar/graph.h \
 		../TP3/Qt_solar/gameObject.h \
 		../TP3/Qt_solar/transform.h \
 		../TP3/Qt_solar/BasicIO.h \
+		../TP3/Qt_solar/mesh.h \
+		../TP3/Qt_solar/geometryengine.h \
 		../TP3/Qt_solar/componnent.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o graph.o ../TP3/Qt_solar/graph.cpp
 
@@ -461,19 +473,17 @@ mesh.o: ../TP3/Qt_solar/mesh.cpp ../TP3/Qt_solar/mesh.h \
 		../TP3/Qt_solar/componnent.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mesh.o ../TP3/Qt_solar/mesh.cpp
 
-stb_image.o: ../TP3/Qt_solar/stb_image.cpp ../TP3/Qt_solar/stb_image.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o stb_image.o ../TP3/Qt_solar/stb_image.cpp
-
 transform.o: ../TP3/Qt_solar/transform.cpp ../TP3/Qt_solar/transform.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o transform.o ../TP3/Qt_solar/transform.cpp
 
 mainwidget.o: ../TP3/Qt_solar/mainwidget.cpp ../TP3/Qt_solar/mainwidget.h \
 		../TP3/Qt_solar/geometryengine.h \
-		../TP3/Qt_solar/mesh.h \
-		../TP3/Qt_solar/BasicIO.h \
-		../TP3/Qt_solar/componnent.h \
+		../TP3/Qt_solar/graph.h \
 		../TP3/Qt_solar/gameObject.h \
-		../TP3/Qt_solar/transform.h
+		../TP3/Qt_solar/transform.h \
+		../TP3/Qt_solar/BasicIO.h \
+		../TP3/Qt_solar/mesh.h \
+		../TP3/Qt_solar/componnent.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwidget.o ../TP3/Qt_solar/mainwidget.cpp
 
 geometryengine.o: ../TP3/Qt_solar/geometryengine.cpp ../TP3/Qt_solar/BasicIO.h \
@@ -481,8 +491,7 @@ geometryengine.o: ../TP3/Qt_solar/geometryengine.cpp ../TP3/Qt_solar/BasicIO.h \
 		../TP3/Qt_solar/mesh.h \
 		../TP3/Qt_solar/geometryengine.h \
 		../TP3/Qt_solar/componnent.h \
-		../TP3/Qt_solar/gameObject.h \
-		../TP3/Qt_solar/stb_image.h
+		../TP3/Qt_solar/gameObject.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o geometryengine.o ../TP3/Qt_solar/geometryengine.cpp
 
 qrc_models.o: qrc_models.cpp 

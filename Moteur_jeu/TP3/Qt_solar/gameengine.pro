@@ -7,7 +7,6 @@ SOURCES += main.cpp \
     gameObject.cpp \
     graph.cpp \
     mesh.cpp \
-    stb_image.cpp \
     transform.cpp
 
 SOURCES += \
@@ -22,7 +21,6 @@ HEADERS += \
     mainwidget.h \
     geometryengine.h \
     mesh.h \
-    stb_image.h \
     transform.h
 
 RESOURCES += \

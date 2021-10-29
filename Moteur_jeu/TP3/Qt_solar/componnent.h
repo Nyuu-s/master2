@@ -3,7 +3,10 @@
 
 #include <iostream>
 
-class Component{
+
+
+class Component
+{
 public:
     unsigned int id;
 

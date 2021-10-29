@@ -61,6 +61,7 @@
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include "graph.h"
 
 class GeometryEngine;
 
@@ -69,6 +70,7 @@ class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_1
     Q_OBJECT
 
 public:
+    Graph *graphScene;
     explicit MainWidget(QWidget *parent = 0);
     ~MainWidget();
 
@@ -85,11 +87,17 @@ protected:
 
     void initShaders();
     void initTextures();
+    void initSphereGeometry(std::vector<VertexData>& points, std::vector<GLushort>& indices);
+    void initGraph();
+    std::vector<VertexData> sphere;
 
 private:
     QBasicTimer timer;
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
+
+
+
 
     QOpenGLTexture *texture;
     QOpenGLTexture *rock;

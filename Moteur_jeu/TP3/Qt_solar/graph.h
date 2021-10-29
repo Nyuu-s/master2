@@ -6,14 +6,14 @@
 class Graph
 {
 public:
-    Graph(gameObject);
+    Graph(gameObject *go);
     ~Graph();
-    gameObject root;
+    gameObject *root;
 
     void update_scene();
-    void draw_elements();
+    void draw_elements(QOpenGLShaderProgram& sp);
 
-private:
+protected:
     void update_transforms(gameObject o);
 };
 

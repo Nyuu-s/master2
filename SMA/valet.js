@@ -17,6 +17,7 @@ let row;
 let res = 40;
 let a1;
 let v1;
+let x;
 
 function keyPressed(){
   a1.toDraw = [];
@@ -40,11 +41,23 @@ function keyPressed(){
   else if(keyCode == CONTROL){
 
     a1.findPath(a1.cell, v1.cell);
+    x = a1.toDraw.length-1;
   }
   else if(keyCode == SHIFT ){
     let c = getCell(floor(mouseX/res), floor(mouseY/res));
-  
-    c.type = 1;
+    
+    if(c.type == 1){
+      c.type = 0;
+    }
+    else{
+      c.type = 1;
+    }
+  }
+  else if(keyCode == 32){
+    if(a1.cell.type ){
+      a1.pickAndDropCar();
+    }
+    
   }
 }
 
@@ -90,11 +103,12 @@ function setup(){
     }  
   }
   a1 = new Agent(grid[26],1);
-  v1 = new Voiture(grid[0]);
+  v1 = new Voiture(grid[col * 2]);
 
-  a1.move(direction.DOWN, 2);
-  console.log(a1.cell, v1.cell);
-  a1.findPath(a1.cell, v1.cell);
+  
+  
+
+  
 
 }
 
@@ -104,16 +118,34 @@ function draw(){
     grid[i].drawCell();
   }
   frameRate(10);
-  for(let i =0; i<a1.toDraw.length;i++){
-    let b = a1.toDraw[i]
-    fill(255,0,255);
-    rect(b.i*res, b.j*res, res, res);
+
+  //render path find
+
+  // for(let i =0; i<a1.toDraw.length;i++){
+  //   let b = a1.toDraw[i]
+  //   fill( 255 / i,0,255/i);
+  //   rect(b.i*res, b.j*res, res, res);
+  // }
+  
+  if(x >= 0){
+    a1.cell = a1.toDraw[x];
+    if(x == 0 ){
+      a1.pickAndDropCar(v1);
+      
+    }
+    x--;
+    
   }
+    
+    
+  
   
 
   a1.show();
+  if(a1.isHoldingCar){
+    v1.cell = a1.cell;
+  }
   v1.show();
-
 
   
     

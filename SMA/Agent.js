@@ -7,18 +7,28 @@ class Agent{
       this.cell = cell;
       this.isHoldingCar = false;
       this.toDraw = [];
+      this.car;
       
     }
   
-  
+    pickAndDropCar(car){
+      this.isHoldingCar = !this.isHoldingCar;
+      if(this.isHoldingCar){
+        this.car = car;
+      }
+      else{
+        this.car = undefined;
+      }
+    }
   
     move(direction, step) {
+      
       
       let u =  grid[constrain((this.cell.j-step), 0, col) * row + this.cell.i];
       let d =  grid[constrain((this.cell.j+step), 0 , col-1 ) * row + this.cell.i ];
       let r =  grid[this.cell.j * row + constrain(this.cell.i + step, 0, row-1) ];
       let l =  grid[this.cell.j * row + constrain(this.cell.i - step, 0, row-1) ];
-      
+      console.log(constrain(this.cell.i + step, 0, row-1));
       switch(direction){
         case 0:  
                 if(!(u.type == 1) ){
@@ -63,13 +73,14 @@ class Agent{
     }
 
     findPath(start, end){
-      for(let i=0; i<grid.length; i++){
-          grid[i].h =0;
-          grid[i].f =0;
-          grid[i].g =0;
-      }
+        for(let i=0; i<grid.length; i++){
+            grid[i].h =0;
+            grid[i].f =0;
+            grid[i].g =0;
+            grid[i].previous = undefined;
+        }
 
-      this.toDraw = [];
+          this.toDraw = [];
         let openSet = [];
         let closeSet = [];
         openSet.push(start);
@@ -89,6 +100,7 @@ class Agent{
 
           var current = openSet[lowestIndex];
 
+
           if(current  == end){
               
               var temp = current;
@@ -100,16 +112,22 @@ class Agent{
               console.log("DONE", this.toDraw);
               return;
           }
+
+          
           
           closeSet.push(current);
           this.removeFromArray(current, openSet);
          
 
           var neighbors = current.neighbors;
+          
             for (let i = 0; i < neighbors.length; i++) {
               
                 var neighbor = neighbors[i];
+                
                 if(!closeSet.includes(neighbor) && current.type != 1){
+
+      
                   var tempG = current.g +1;
                   
                   if(openSet.includes(neighbor)){
@@ -122,9 +140,11 @@ class Agent{
                     neighbor.g = tempG;
                     openSet.push(neighbor);
                   }
-
+                  
                   neighbor.h = this.heuristic(neighbor, end);
+                  
                   neighbor.f = neighbor.g + neighbor.h;
+                  
                   neighbor.previous = current;
                 
                 }
@@ -147,6 +167,7 @@ class Agent{
       else
       {
         stroke(0,255,0);
+        
       }
       noFill();
       // ellipse(this.cell.i * res, this.cell.j*res, res);
