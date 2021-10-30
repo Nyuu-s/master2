@@ -28,13 +28,14 @@ public:
     void print();
     void copy(const gameObject& src, gameObject& dst);
     void addComponent(Component *c);
-    void addChild(gameObject& a);
+    void addChild(gameObject *a);
     void setParent(gameObject& a);
     void removeChild(gameObject& c);
     void removeComponent(Component& c);
-    void appyTransform(Transform transform);
+    void applyTransform(Transform& transform);
     void Draw(QOpenGLShaderProgram& shaderProgram);
-    template<typename Base, typename T> bool instanceof(const T*) {
+    template<typename Base, typename T>
+    inline bool instanceof(const T*) {
        return std::is_base_of<Base, T>::value;
     }
 

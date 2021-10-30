@@ -98,7 +98,7 @@ private:
 
 
 
-
+    Mesh *soleilMesh; // TODO une liste de tout les mesh de la futur scene (pour delete)
     QOpenGLTexture *texture;
     QOpenGLTexture *rock;
     QOpenGLTexture *snow;

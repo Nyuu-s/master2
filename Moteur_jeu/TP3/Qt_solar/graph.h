@@ -14,7 +14,8 @@ public:
     void draw_elements(QOpenGLShaderProgram& sp);
 
 protected:
-    void update_transforms(gameObject o);
+    void update_transforms(gameObject& o);
+    void update_transforms2(gameObject& o);
 };
 
 #endif // GRAPH_H

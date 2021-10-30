@@ -14,6 +14,8 @@ public:
 
     Component(){};
     virtual ~Component(){};
+
+    virtual void applyTransform(){};
 };
 
 #endif // COMPONNENT_H

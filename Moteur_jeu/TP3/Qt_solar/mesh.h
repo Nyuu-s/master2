@@ -4,6 +4,7 @@
 #include"BasicIO.h"
 #include"geometryengine.h"
 #include"componnent.h"
+#include"transform.h"
 #include"geometryengine.h"
 
 class Mesh : public Component
@@ -28,7 +29,9 @@ public:
     static std::vector<QVector3D> loadOBJ(std::string filename);
 
     VertexData* VertextoArray(VertexData* arr);
-    unsigned int* IndextoArray(unsigned int* arr);
+    unsigned short* IndextoArray(unsigned short* arr);
+
+    void applyTransform(Transform t);
 
     unsigned int getID();
     void printVertices();

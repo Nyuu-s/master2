@@ -19,7 +19,7 @@ VertexData* Mesh::VertextoArray(VertexData* arr){
 }
 
 
-unsigned int* Mesh::IndextoArray(unsigned int* arr){
+unsigned short* Mesh::IndextoArray(unsigned short* arr){
 
     for(unsigned int i =0; i<this->indices.size(); i++){
         arr[i] = this->indices[i];
@@ -88,44 +88,55 @@ std::vector<QVector3D> Mesh::loadOBJ(std::string filename){
 
 }
 
+void Mesh::applyTransform(Transform t){
+    int i=0;
+    for(auto vertex : this->vertices){
+        this->vertices[i++].position = t.applyToPoint(vertex.position);
+    }
+}
 
 void Mesh::Draw(QOpenGLShaderProgram& shaderProgram){
 
-    VertexData vertices_arr[vertices.size()];
-    this->VertextoArray(vertices_arr);
+      GeometryEngine geo = GeometryEngine();
+      VertexData v[this->vertices.size()];
+      GLushort i[this->indices.size()];
+      geo.drawCubeGeometry(&shaderProgram, this->VertextoArray(v), this->IndextoArray(i), this->vertexNumber, this->indexNumber);
 
-    VertexData indices_arr[vertices.size()];
-    this->VertextoArray(indices_arr);
-    qDebug() << indices_arr <<" test";
+//    VertexData vertices_arr[vertices.size()];
+//    this->VertextoArray(vertices_arr);
 
-    vertexBuffer.bind() ;
-    vertexBuffer.allocate(vertices_arr, vertexNumber * sizeof(VertexData));
+//    VertexData indices_arr[vertices.size()];
+//    this->VertextoArray(indices_arr);
+//    qDebug() << indices_arr <<" test";
 
-    indexBuffer.bind();
-    indexBuffer.allocate(indices_arr,  indexBuffer.size() * sizeof(GLushort));
+//    vertexBuffer.bind() ;
+//    vertexBuffer.allocate(vertices_arr, vertexNumber * sizeof(VertexData));
+
+//    indexBuffer.bind();
+//    indexBuffer.allocate(indices_arr,  indexBuffer.size() * sizeof(GLushort));
 
 
 
 
 
-    // Offset for position
-    quintptr offset = 0;
+//    // Offset for position
+//    quintptr offset = 0;
 
-    // Tell OpenGL programmable pipeline how to locate vertex position data
-    int vertexLocation = shaderProgram.attributeLocation("a_position");
-    shaderProgram.enableAttributeArray(vertexLocation);
-    shaderProgram.setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+//    // Tell OpenGL programmable pipeline how to locate vertex position data
+//    int vertexLocation = shaderProgram.attributeLocation("a_position");
+//    shaderProgram.enableAttributeArray(vertexLocation);
+//    shaderProgram.setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
 
-    // Offset for texture coordinate
-    offset += sizeof(QVector3D);
+//    // Offset for texture coordinate
+//    offset += sizeof(QVector3D);
 
-    // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
-    int texcoordLocation = shaderProgram.attributeLocation("a_texcoord");
-    shaderProgram.enableAttributeArray(texcoordLocation);
-    shaderProgram.setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+//    // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
+//    int texcoordLocation = shaderProgram.attributeLocation("a_texcoord");
+//    shaderProgram.enableAttributeArray(texcoordLocation);
+//    shaderProgram.setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
-    // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLE_STRIP, indexBuffer.size()/2, GL_UNSIGNED_SHORT, 0); //Careful update indicesNumber when creating new geometry
+//    // Draw cube geometry using indices from VBO 1
+  //  glDrawElements(GL_TRIANGLE_STRIP, indexBuffer.size()/2, GL_UNSIGNED_SHORT, 0); //Careful update indicesNumber when creating new geometry
 }
 
 

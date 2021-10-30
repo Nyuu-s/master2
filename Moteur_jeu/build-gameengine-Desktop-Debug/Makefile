@@ -470,7 +470,8 @@ graph.o: ../TP3/Qt_solar/graph.cpp ../TP3/Qt_solar/graph.h \
 mesh.o: ../TP3/Qt_solar/mesh.cpp ../TP3/Qt_solar/mesh.h \
 		../TP3/Qt_solar/BasicIO.h \
 		../TP3/Qt_solar/geometryengine.h \
-		../TP3/Qt_solar/componnent.h
+		../TP3/Qt_solar/componnent.h \
+		../TP3/Qt_solar/transform.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mesh.o ../TP3/Qt_solar/mesh.cpp
 
 transform.o: ../TP3/Qt_solar/transform.cpp ../TP3/Qt_solar/transform.h

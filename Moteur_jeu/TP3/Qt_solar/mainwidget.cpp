@@ -79,8 +79,10 @@ MainWidget::MainWidget(QWidget *parent) :
 void MainWidget::initGraph(){
 
     geometries = new GeometryEngine;
+    QQuaternion q = QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 0.5);
+
     gameObject* World =  new gameObject(Transform(QQuaternion(), QVector3D(), 1), 1, 1, "world");
-    gameObject* Soleil = new gameObject(Transform(QQuaternion(), QVector3D(), 1),9,9, "soleil");
+    gameObject* Soleil = new gameObject(Transform(q, QVector3D(0,0,0), 1),9,9, "soleil");
 //    gameObject Mercure = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
 //    gameObject Venus = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
 //    gameObject Mars = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
@@ -93,21 +95,23 @@ void MainWidget::initGraph(){
     std::vector<VertexData> v;
     std::vector<GLushort> index;
 
-    //this->initSphereGeometry(v, index);
-    GeometryEngine::initCubeGeometry(64, 64, 1, 1,v, index);
+    this->initSphereGeometry(v, index);
+   // GeometryEngine::initCubeGeometry(64, 64, 1, 1,v, index);
 
-    Mesh *soleilMesh = new Mesh(v, index);
+    soleilMesh = new Mesh(v, index);
 
-    soleilMesh->id = 777;
+    soleilMesh ->id = 777;
 
     World->id = 666;
     Soleil->id = 1;
     Soleil->addComponent(soleilMesh);
-    World->addChild(*Soleil);
+    Soleil->parent = World;
+    World->addChild(Soleil);
 
     graphScene = new Graph(World);
 
-    qDebug() << graphScene->root->id << " " << graphScene->root->name.c_str();
+
+
     //potentiel probleme : si tout les objet on le meme mesh apres une transformation tous les mesh sont mis a jour ?
     //maybe faire x instance de planet.
 //    Soleil.addComponent(planet);
@@ -147,6 +151,7 @@ MainWidget::~MainWidget()
     // Make sure the context is current when deleting the texture
     // and the buffers.
     makeCurrent();
+    delete soleilMesh;
     delete texture;
     delete heightmap;
     delete snow;
@@ -199,6 +204,11 @@ void MainWidget::timerEvent(QTimerEvent *)
         // Request an update
         update();
     }
+
+
+
+
+
 }
 //! [1]
 
@@ -369,7 +379,11 @@ void MainWidget::paintGL()
     program.setUniformValue("snow", 3);
     program.setUniformValue("heightmap", 1);
    // qDebug() << graphScene->root->id << " " << graphScene->root->name.c_str();
+    graphScene->update_scene();
     graphScene->draw_elements(program);
+
+    //graphScene->update_scene();
+    update();
 
     // Draw plane geometry
 

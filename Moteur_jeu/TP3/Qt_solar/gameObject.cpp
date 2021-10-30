@@ -19,8 +19,8 @@ void gameObject::addComponent(Component *c)
     this->components.push_back(c);
 }
 
-void gameObject::addChild(gameObject& a){
-    this->children.push_back(a);
+void gameObject::addChild(gameObject *a){
+    this->children.push_back(*a);
 }
 
 void gameObject::setParent(gameObject& a){
@@ -35,17 +35,18 @@ void gameObject::removeChild(gameObject& c){
     }
 }
 
-void gameObject::appyTransform(Transform transform)
+void gameObject::applyTransform(Transform& transform)
 {
-    for(Component *component : this->components){
+    for(Component *component : this->children[0].components){
+        qDebug() << "transform scene...";
+        Mesh* mesh = dynamic_cast<Mesh*>(component);
 
-        if(instanceof<Mesh>(&component)){
-            Mesh* mesh = dynamic_cast<Mesh*>(component);
-            for(auto vertex : mesh->vertices){
-                transform.applyToPoint(vertex.position);
-            }
-
+        if (mesh != nullptr){
+            qDebug()<< "EST UN MESH";
+            mesh->applyTransform(transform);
         }
+        else
+            qDebug()<<"PAS UN MESH";
     }
 
 }
@@ -70,7 +71,4 @@ void gameObject::Draw(QOpenGLShaderProgram& shaderProgram){
 
 }
 
-void gameObject::copy(const gameObject& src, gameObject& dst){
-
-}
 
