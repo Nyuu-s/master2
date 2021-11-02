@@ -10,47 +10,66 @@ Graph::Graph(gameObject *obj)
 }
 
 Graph::~Graph(){
-
+    // TODO delete all gameObject from root to leaves
 }
+
 
 // MODIFY TRANSFORM TO WORLD TRANSFORM A * B * C ...
-//void Graph::update_transforms(gameObject& o){
-//    gameObject cur = o;
+void Graph::update_transforms(gameObject& obj){
 
-//    if(cur.children.size() <= 0){
-//        Transform updated_transform = cur.transform.combine_with(cur.parent->transform); // conserver une matrice locale et world ? ou juste world ?
-//        cur.transform = updated_transform;
 
-//        return;
-//    }
+    if(obj.children.size() <= 0){
+//        Transform updated_transform = obj.transform.combine_with(obj.parent->transform); // conserver une matrice locale et world ? ou juste world ?
+//        obj.transform = updated_transform;
+        obj.applyTransform();
+        return;
+    }
 
-//    for (unsigned int i=0; i < cur.children.size(); i++ ) {
-//        qDebug() << cur.id << " != " << this->root->id << " " <<(cur.id != this->root->id) ;
-//        if(cur.id != this->root->id){
-//            Transform updated_transform = cur.transform.combine_with(cur.parent->transform); // conserver une matrice locale et world ? ou juste world ?
-//            cur.transform = updated_transform;
-//           // cur.applyTransform(updated_transform);
-//        }
-//        update_transforms(cur.children[i]);
-//    }
+    for (unsigned int i=0; i < obj.children.size(); i++ ) {
+        gameObject *cur = &obj.children[i];
+        if(cur->id != this->root->id){
+            Transform updated_transform = cur->transform.combine_with(cur->parent->transform); // conserver une matrice locale et world ? ou juste world ?
+            cur->transform = updated_transform;
 
-//}
+        }
+        update_transforms(*cur);
+    }
 
-void Graph::update_transforms2(gameObject& obj){
-
-    obj.applyTransform(obj.children[0].transform);
+    obj.applyTransform();
 
 }
+
+
+
 
 void Graph::update_scene(){
-    qDebug() << "update scene...";
-    update_transforms2(*this->root);
+    //first update locals transforms
+
+
+    //then update
+    update_transforms(*this->root);
+
 
 
 }
 
+void Graph::draw_elements(gameObject &obj, QOpenGLShaderProgram& shaderProgram){
+    if(obj.children.size() <= 0){
+        obj.Draw(shaderProgram);
+        return;
+    }
 
-void Graph::draw_elements(QOpenGLShaderProgram& shaderProgram){
+    for (auto &game_object : obj.children ) {
+           game_object.Draw(shaderProgram);
+           draw_elements(game_object, shaderProgram);
+    }
+}
 
-    root->children[0].Draw(shaderProgram);
+// store shader program in graph class maybe ?
+
+void Graph::draw_graph(QOpenGLShaderProgram& shaderProgram){
+    draw_elements(*this->root, shaderProgram);
+
+//    for(auto gameObj : root->children)
+//        gameObj.Draw(shaderProgram);
 }

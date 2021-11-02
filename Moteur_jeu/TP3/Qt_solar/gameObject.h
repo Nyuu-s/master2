@@ -23,7 +23,7 @@ public:
 
     Transform transform;
     gameObject();
-    gameObject( Transform t, int n, int m, std::string s);
+    gameObject( Transform t, int n, int m, int id, std::string s);
 
     void print();
     void copy(const gameObject& src, gameObject& dst);
@@ -32,7 +32,7 @@ public:
     void setParent(gameObject& a);
     void removeChild(gameObject& c);
     void removeComponent(Component& c);
-    void applyTransform(Transform& transform);
+    void applyTransform();
     void Draw(QOpenGLShaderProgram& shaderProgram);
     template<typename Base, typename T>
     inline bool instanceof(const T*) {

@@ -8,7 +8,7 @@ gameObject::gameObject()
 
 }
 
-gameObject::gameObject(Transform t, int nChild , int nComponent , std::string s ) : name(s), transform(t)
+gameObject::gameObject(Transform t, int nChild , int nComponent , int go_id , std::string s ) : id(go_id), name(s), transform(t)
 {
     this->components.reserve(nComponent);
     this->children.reserve(nChild);
@@ -35,19 +35,23 @@ void gameObject::removeChild(gameObject& c){
     }
 }
 
-void gameObject::applyTransform(Transform& transform)
+void gameObject::applyTransform()
 {
-    for(Component *component : this->children[0].components){
-        qDebug() << "transform scene...";
-        Mesh* mesh = dynamic_cast<Mesh*>(component);
 
-        if (mesh != nullptr){
-            qDebug()<< "EST UN MESH";
-            mesh->applyTransform(transform);
+
+        qDebug() << "r";
+        for(Component *component : this->components){
+            qDebug() << "transform scene...";
+            Mesh* mesh = dynamic_cast<Mesh*>(component);
+
+            if (mesh != nullptr){
+                qDebug()<< "EST UN MESH";
+                mesh->applyTransform(transform);
+            }
+            else
+                qDebug()<<"PAS UN MESH";
         }
-        else
-            qDebug()<<"PAS UN MESH";
-    }
+
 
 }
 
@@ -64,9 +68,17 @@ void gameObject::removeComponent(Component& c){
 }
 
 void gameObject::Draw(QOpenGLShaderProgram& shaderProgram){
-    Mesh *mesh = dynamic_cast<Mesh*>(this->components[0]);
+    for (auto component : this->components ) {
 
-    mesh->Draw(shaderProgram);
+        Mesh* mesh = dynamic_cast<Mesh*>(component);
+
+        if (mesh != nullptr)
+            mesh->Draw(shaderProgram);
+        else
+            qDebug()<<"Not a mesh impossible to draw --> implement a draw function for your object";
+
+    }
+
 
 
 }

@@ -88,10 +88,11 @@ protected:
     void initShaders();
     void initTextures();
     void initSphereGeometry(std::vector<VertexData>& points, std::vector<GLushort>& indices);
-    void initGraph();
+    void initGraph(int nb_mesh);
     std::vector<VertexData> sphere;
 
 private:
+
     QBasicTimer timer;
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
@@ -99,6 +100,8 @@ private:
 
 
     Mesh *soleilMesh; // TODO une liste de tout les mesh de la futur scene (pour delete)
+    Mesh *terreMesh;
+    std::vector<Mesh*> *meshList;
     QOpenGLTexture *texture;
     QOpenGLTexture *rock;
     QOpenGLTexture *snow;

@@ -57,8 +57,6 @@ QVector4D Transform::apply(QVector4D p){
 Transform Transform::combine_with(Transform &t)
 {
 
-    // multiplication des translation ?
-
     Transform res = Transform( rotate * t.rotate, translate + t.translate, scale * t.scale );
     return (res);
 }

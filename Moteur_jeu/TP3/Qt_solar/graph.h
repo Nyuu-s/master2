@@ -11,11 +11,12 @@ public:
     gameObject *root;
 
     void update_scene();
-    void draw_elements(QOpenGLShaderProgram& sp);
+    void draw_graph(QOpenGLShaderProgram& sp);
 
 protected:
     void update_transforms(gameObject& o);
-    void update_transforms2(gameObject& o);
+    void draw_elements(gameObject& o, QOpenGLShaderProgram& shaderProgram);
+
 };
 
 #endif // GRAPH_H

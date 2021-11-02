@@ -76,17 +76,22 @@ MainWidget::MainWidget(QWidget *parent) :
 }
 
 
-void MainWidget::initGraph(){
+void MainWidget::initGraph(int nb_mesh){
+    this->meshList = (new std::vector<Mesh*>(nb_mesh));
 
     geometries = new GeometryEngine;
-    QQuaternion q = QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 0.5);
+    QQuaternion q = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 0.0f, 0.5);
+    QQuaternion s = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 1.0f, 0.5);
 
-    gameObject* World =  new gameObject(Transform(QQuaternion(), QVector3D(), 1), 1, 1, "world");
-    gameObject* Soleil = new gameObject(Transform(q, QVector3D(0,0,0), 1),9,9, "soleil");
+
+    //GameObject( Transform T, child_number, component_number, ID, name)
+
+    gameObject*  World  =   new gameObject(Transform(QQuaternion(), QVector3D(), 1), 1, 1, 0, "world");
+    gameObject*  Soleil =   new gameObject(Transform(q, QVector3D(0,0,0), 1),9,9, 1, "soleil");
 //    gameObject Mercure = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
 //    gameObject Venus = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
 //    gameObject Mars = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
-//    gameObject Terre = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
+    gameObject*  Terre =    new gameObject(Transform(s, QVector3D(0,0.1,0), 1),1,1, 2,"Terre");
 
 
 
@@ -96,17 +101,29 @@ void MainWidget::initGraph(){
     std::vector<GLushort> index;
 
     this->initSphereGeometry(v, index);
-   // GeometryEngine::initCubeGeometry(64, 64, 1, 1,v, index);
-
     soleilMesh = new Mesh(v, index);
-
     soleilMesh ->id = 777;
+    v.clear();
+    index.clear();
+    GeometryEngine::initCubeGeometry(64, 64, 1, 1,v, index);
+    terreMesh = new Mesh(v, index);
 
-    World->id = 666;
-    Soleil->id = 1;
+
+// l'odre importe car addchild n'ajoute pas dans une liste de pointeur mais une liste d'obj
+
+//    this->meshList->push_back(soleilMesh);
+//    this->meshList->push_back(terreMesh);
+
+    Terre->addComponent(terreMesh);
+    Terre->parent = Soleil;
+
     Soleil->addComponent(soleilMesh);
     Soleil->parent = World;
+    Soleil->addChild(Terre);
+
     World->addChild(Soleil);
+
+
 
     graphScene = new Graph(World);
 
@@ -152,6 +169,11 @@ MainWidget::~MainWidget()
     // and the buffers.
     makeCurrent();
     delete soleilMesh;
+    delete terreMesh;
+    for(auto ptr : *meshList){
+        delete ptr;
+    }
+    delete meshList;
     delete texture;
     delete heightmap;
     delete snow;
@@ -272,7 +294,7 @@ void MainWidget::initializeGL()
 
    // geometries = new GeometryEngine;
 
-    initGraph();
+    initGraph(2); // k = nb meshs
 
     // Use QBasicTimer because its faster than QTimer
     timer.start(12, this);
@@ -362,7 +384,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(0.0, 0.0, -20.0);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
@@ -380,7 +402,7 @@ void MainWidget::paintGL()
     program.setUniformValue("heightmap", 1);
    // qDebug() << graphScene->root->id << " " << graphScene->root->name.c_str();
     graphScene->update_scene();
-    graphScene->draw_elements(program);
+    graphScene->draw_graph(program);
 
     //graphScene->update_scene();
     update();

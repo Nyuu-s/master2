@@ -46,11 +46,11 @@ Mesh::Mesh(std::vector<VertexData>& vertex, std::vector<GLushort>& indexes) : in
 
 
     //this->id = id;
-    this->indexNumber = indexes.size();
+    this->indexNumber  = indexes.size();
     this->vertexNumber = vertex.size();
-    std::vector<GLushort> tempInd = *(new std::vector<GLushort>(indexes));
-    this->indices = tempInd;
-    this->vertices = *(new std::vector<VertexData>(vertex));
+
+    this->indices =   std::vector<GLushort>(indexes);
+    this->vertices =  std::vector<VertexData>(vertex);
 
 
     // Generate 2 VBOs
