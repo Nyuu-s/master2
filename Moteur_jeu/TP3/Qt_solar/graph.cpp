@@ -15,27 +15,48 @@ Graph::~Graph(){
 
 
 // MODIFY TRANSFORM TO WORLD TRANSFORM A * B * C ...
-void Graph::update_transforms(gameObject& obj){
+void Graph::update_worldTransforms(gameObject* obj)
+{
 
+    if(this->root->id == obj->id)
+    {
+        obj->world_transform = obj->transform;
+    }
+    else
+    {
+        qDebug() << "changement de world_transform pour " << obj->name.c_str() << "\n";
 
-    if(obj.children.size() <= 0){
-//        Transform updated_transform = obj.transform.combine_with(obj.parent->transform); // conserver une matrice locale et world ? ou juste world ?
-//        obj.transform = updated_transform;
-        obj.applyTransform();
-        return;
+        obj->world_transform =  obj->parent->world_transform * obj->transform; //obj->transform.combine_with(obj->parent->world_transform); // multiply current local with parents's world transform
     }
 
-    for (unsigned int i=0; i < obj.children.size(); i++ ) {
-        gameObject *cur = &obj.children[i];
-        if(cur->id != this->root->id){
-            Transform updated_transform = cur->transform.combine_with(cur->parent->transform); // conserver une matrice locale et world ? ou juste world ?
-            cur->transform = updated_transform;
-
-        }
-        update_transforms(*cur);
+    for (unsigned int i=0; i < obj->children.size(); i++ )
+    {
+        //gameObject& cur = obj.children[i];
+        update_worldTransforms(obj->children[i]);
     }
 
-    obj.applyTransform();
+//    for(Component* comp : obj->components){
+//        Mesh* mesh = dynamic_cast<Mesh*>(comp);
+//        if (mesh != nullptr)
+//            mesh->applyTransform(obj->world_transform);
+
+//    }
+
+}
+
+
+
+// MODIFY TRANSFORM TO WORLD TRANSFORM A * B * C ...
+void Graph::update_localTransforms(gameObject* obj){
+
+    obj->transform = obj->transform.combine_with(obj->transform);
+
+    for (unsigned int i=0; i < obj->children.size(); i++ ) {
+
+        update_worldTransforms(obj->children[i]);
+    }
+
+    //obj.applyTransform();
 
 }
 
@@ -43,25 +64,22 @@ void Graph::update_transforms(gameObject& obj){
 
 
 void Graph::update_scene(){
-    //first update locals transforms
+    //first update locals matrix
+    //update_localTransforms(this->root);
 
-
-    //then update
-    update_transforms(*this->root);
+    //then update worlds matrix
+    update_worldTransforms(this->root);
 
 
 
 }
 
 void Graph::draw_elements(gameObject &obj, QOpenGLShaderProgram& shaderProgram){
-    if(obj.children.size() <= 0){
-        obj.Draw(shaderProgram);
-        return;
-    }
 
-    for (auto &game_object : obj.children ) {
-           game_object.Draw(shaderProgram);
-           draw_elements(game_object, shaderProgram);
+    obj.Draw(shaderProgram);
+
+    for (auto game_object : obj.children ) {
+           draw_elements(*game_object, shaderProgram);
     }
 }
 

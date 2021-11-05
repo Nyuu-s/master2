@@ -97,8 +97,8 @@ private:
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
 
-
-
+    gameObject* Soleil;
+    gameObject* Terre;
     Mesh *soleilMesh; // TODO une liste de tout les mesh de la futur scene (pour delete)
     Mesh *terreMesh;
     std::vector<Mesh*> *meshList;

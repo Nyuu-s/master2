@@ -3,6 +3,10 @@
 Transform::Transform()
 {
     matrix = QMatrix4x4();
+    matrix.setToIdentity();
+    rotate = QQuaternion();
+    scale = 1;
+    translate = QVector3D();
 }
 
 Transform::Transform( QQuaternion r, QVector3D trans, float s)
@@ -57,7 +61,7 @@ QVector4D Transform::apply(QVector4D p){
 Transform Transform::combine_with(Transform &t)
 {
 
-    Transform res = Transform( rotate * t.rotate, translate + t.translate, scale * t.scale );
+    Transform res = Transform( t.rotate * rotate,  t.translate + translate,  t.scale * scale);
     return (res);
 }
 
@@ -66,3 +70,5 @@ Transform Transform::inverse(){
     Transform res = Transform( rotate.inverted(), -translate, 1/scale);
     return res;
 }
+
+

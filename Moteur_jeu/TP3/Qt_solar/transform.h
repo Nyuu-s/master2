@@ -38,7 +38,11 @@ public:
     }
 
 
+    Transform operator*(Transform& world)
+    {
 
+        return world.combine_with(*this);
+    }
 
 };
 

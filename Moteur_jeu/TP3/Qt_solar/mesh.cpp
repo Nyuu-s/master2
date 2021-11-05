@@ -9,11 +9,11 @@ unsigned int Mesh::getID(){
     return this->id;
 }
 
-VertexData* Mesh::VertextoArray(VertexData* arr){
+VertexData* Mesh::VertextoArray(VertexData* arr, std::vector<VertexData> &tempV){
 
-    for(unsigned int i =0; i<this->vertices.size(); i++){
-        arr[i].position = this->vertices[i].position;
-        arr[i].texCoord = this->vertices[i].texCoord;
+    for(unsigned int i  =0; i<this->vertices.size(); i++){
+        arr[i].position = tempV[i].position;
+        arr[i].texCoord = tempV[i].texCoord;
     }
     return arr;
 }
@@ -88,19 +88,26 @@ std::vector<QVector3D> Mesh::loadOBJ(std::string filename){
 
 }
 
-void Mesh::applyTransform(Transform t){
+void Mesh::applyTransform(Transform t, std::vector<VertexData> &tempV){
     int i=0;
+
     for(auto vertex : this->vertices){
-        this->vertices[i++].position = t.applyToPoint(vertex.position);
+
+        tempV[i].position = t.applyToPoint(vertex.position);
+        tempV[i].texCoord = vertex.texCoord;
+        i++;
+
     }
 }
 
-void Mesh::Draw(QOpenGLShaderProgram& shaderProgram){
+void Mesh::Draw(QOpenGLShaderProgram& shaderProgram, std::vector<VertexData> &tempV){
+
 
       GeometryEngine geo = GeometryEngine();
       VertexData v[this->vertices.size()];
       GLushort i[this->indices.size()];
-      geo.drawCubeGeometry(&shaderProgram, this->VertextoArray(v), this->IndextoArray(i), this->vertexNumber, this->indexNumber);
+
+      geo.drawCubeGeometry(&shaderProgram, this->VertextoArray(v, tempV), this->IndextoArray(i), this->vertexNumber, this->indexNumber);
 
 //    VertexData vertices_arr[vertices.size()];
 //    this->VertextoArray(vertices_arr);

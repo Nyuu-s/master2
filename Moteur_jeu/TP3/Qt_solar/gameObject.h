@@ -16,21 +16,24 @@ public:
     unsigned int id;
     std::string name;
 
-    std::vector<gameObject> children;
+    std::vector<gameObject*> children;
     gameObject* parent; // only one party is assumed for a gameObject
 
     std::vector<Component*> components;
 
     Transform transform;
+    Transform world_transform;
     gameObject();
     gameObject( Transform t, int n, int m, int id, std::string s);
 
     void print();
     void copy(const gameObject& src, gameObject& dst);
     void addComponent(Component *c);
-    void addChild(gameObject *a);
-    void setParent(gameObject& a);
-    void removeChild(gameObject& c);
+    void addChild(gameObject *a); // to remove
+
+
+    void setParent(gameObject* a); // et child also
+    void removeChild(gameObject* c);
     void removeComponent(Component& c);
     void applyTransform();
     void Draw(QOpenGLShaderProgram& shaderProgram);

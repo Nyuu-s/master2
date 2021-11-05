@@ -80,18 +80,18 @@ void MainWidget::initGraph(int nb_mesh){
     this->meshList = (new std::vector<Mesh*>(nb_mesh));
 
     geometries = new GeometryEngine;
-    QQuaternion q = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 0.0f, 0.5);
-    QQuaternion s = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 1.0f, 0.5);
+    QQuaternion q = QQuaternion::fromAxisAndAngle(1.f, 0.0f, 0.0f, 0.5);
+    QQuaternion s = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 0.0f, 0.5);
 
 
     //GameObject( Transform T, child_number, component_number, ID, name)
 
-    gameObject*  World  =   new gameObject(Transform(QQuaternion(), QVector3D(), 1), 1, 1, 0, "world");
-    gameObject*  Soleil =   new gameObject(Transform(q, QVector3D(0,0,0), 1),9,9, 1, "soleil");
+    gameObject*  World  =   new gameObject(Transform(), 1, 1, 0, "world");
+    Soleil =   new gameObject(Transform(q, QVector3D(0,0,0), 1),9,9, 1, "soleil"); // local transform par rapport au monde
+    Terre  =   new gameObject(Transform(s, QVector3D(2,0,0), 1),1,1, 2,"Terre"); // local transform par rapport au soleil
 //    gameObject Mercure = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
 //    gameObject Venus = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
 //    gameObject Mars = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
-    gameObject*  Terre =    new gameObject(Transform(s, QVector3D(0,0.1,0), 1),1,1, 2,"Terre");
 
 
 
@@ -115,17 +115,17 @@ void MainWidget::initGraph(int nb_mesh){
 //    this->meshList->push_back(terreMesh);
 
     Terre->addComponent(terreMesh);
-    Terre->parent = Soleil;
+    Terre->setParent(Soleil); // use setParent and not addchild, store a pointer list and not object list
 
     Soleil->addComponent(soleilMesh);
-    Soleil->parent = World;
-    Soleil->addChild(Terre);
-
-    World->addChild(Soleil);
-
-
+    Soleil->setParent(World);
 
     graphScene = new Graph(World);
+
+
+
+    Soleil->id = 777;
+
 
 
 
@@ -384,7 +384,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -20.0);
+    matrix.translate(0.0, 0.0, -10.0);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
@@ -401,6 +401,8 @@ void MainWidget::paintGL()
     program.setUniformValue("snow", 3);
     program.setUniformValue("heightmap", 1);
    // qDebug() << graphScene->root->id << " " << graphScene->root->name.c_str();
+    Soleil->transform.rotate *= QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 0.5);
+    //Terre->transform.rotate *= QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 1.0f, 0.5);
     graphScene->update_scene();
     graphScene->draw_graph(program);
 

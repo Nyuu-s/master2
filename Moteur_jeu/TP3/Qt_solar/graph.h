@@ -14,7 +14,8 @@ public:
     void draw_graph(QOpenGLShaderProgram& sp);
 
 protected:
-    void update_transforms(gameObject& o);
+    void update_worldTransforms(gameObject* o);
+    void update_localTransforms(gameObject* o);
     void draw_elements(gameObject& o, QOpenGLShaderProgram& shaderProgram);
 
 };
