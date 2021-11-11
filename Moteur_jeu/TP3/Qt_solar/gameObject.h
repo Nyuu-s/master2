@@ -35,7 +35,7 @@ public:
     void setParent(gameObject* a); // et child also
     void removeChild(gameObject* c);
     void removeComponent(Component& c);
-    void applyTransform();
+    void applyTransform(Transform &t);
     void Draw(QOpenGLShaderProgram& shaderProgram);
     template<typename Base, typename T>
     inline bool instanceof(const T*) {

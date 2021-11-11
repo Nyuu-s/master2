@@ -98,9 +98,11 @@ private:
     GeometryEngine *geometries;
 
     gameObject* Soleil;
+    gameObject* Lune;
     gameObject* Terre;
     Mesh *soleilMesh; // TODO une liste de tout les mesh de la futur scene (pour delete)
     Mesh *terreMesh;
+    Mesh *luneMesh;
     std::vector<Mesh*> *meshList;
     QOpenGLTexture *texture;
     QOpenGLTexture *rock;

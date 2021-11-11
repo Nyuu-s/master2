@@ -92,7 +92,7 @@ void Mesh::applyTransform(Transform t, std::vector<VertexData> &tempV){
     int i=0;
 
     for(auto vertex : this->vertices){
-
+        //this->vertices[i].position = this->vertices[i].position + t.translate;
         tempV[i].position = t.applyToPoint(vertex.position);
         tempV[i].texCoord = vertex.texCoord;
         i++;

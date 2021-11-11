@@ -38,10 +38,13 @@ public:
     }
 
 
-    Transform operator*(Transform& world)
+    Transform operator*(Transform& local)
     {
+        Transform res_test1 = Transform(this->rotate * local.rotate, this->translate + local.translate, this->scale * local.scale);
+        Transform res_test2 = Transform( local.rotate * this->rotate,  local.translate + this->translate, local.scale * this->scale);
 
-        return world.combine_with(*this);
+        return res_test1;
+        //return this->combine_with(local);
     }
 
 };

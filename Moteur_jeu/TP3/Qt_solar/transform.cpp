@@ -30,7 +30,7 @@ Transform::Transform( QQuaternion r, QVector3D trans, float s)
 
 QVector3D Transform::applyToPoint(QVector3D p)
 {
-    return ( rotate.rotatedVector(p) + translate) * scale;
+    return ( rotate.rotatedVector(p) * scale) + translate   ;
 }
 
 QVector3D Transform::applyToVector(QVector3D v)
@@ -61,7 +61,8 @@ QVector4D Transform::apply(QVector4D p){
 Transform Transform::combine_with(Transform &t)
 {
 
-    Transform res = Transform( t.rotate * rotate,  t.translate + translate,  t.scale * scale);
+
+    Transform res = Transform( rotate * t.rotate,  translate + t.translate,  scale * t.scale);
     return (res);
 }
 

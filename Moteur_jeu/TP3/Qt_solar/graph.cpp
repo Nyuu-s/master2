@@ -24,9 +24,9 @@ void Graph::update_worldTransforms(gameObject* obj)
     }
     else
     {
-        qDebug() << "changement de world_transform pour " << obj->name.c_str() << "\n";
+        //qDebug() << "changement de world_transform pour " << obj->name.c_str() << "\n";
 
-        obj->world_transform =  obj->parent->world_transform * obj->transform; //obj->transform.combine_with(obj->parent->world_transform); // multiply current local with parents's world transform
+        obj->world_transform =  obj->parent->world_transform * obj->transform ; //obj->transform.combine_with(obj->parent->world_transform); // multiply current local with parents's world transform
     }
 
     for (unsigned int i=0; i < obj->children.size(); i++ )
