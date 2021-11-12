@@ -15,12 +15,26 @@ public:
     Transform(QQuaternion rotate, QVector3D trans, float s);
 
     //fields
-    QMatrix4x4  matrix;
+    QMatrix4x4  matrix; // world transform
+
+    //local transform
     float       scale;  //uniform scale
     QQuaternion rotate;
-    QVector3D   translate;
+    QVector3D   position;
 
     //methods
+    QMatrix4x4 getModelMatrix();
+    QMatrix4x4 getLocalModelMatrix();
+
+
+
+    void computeModelMatrix();
+    void computeModelMatrix(const QMatrix4x4 &parentMatrix);
+
+
+
+
+
     QVector4D apply(QVector4D p);
     QVector3D applyToPoint(QVector3D  p);
     QVector3D applyToVector(QVector3D v);
@@ -33,15 +47,15 @@ public:
         result.scale = this->scale * k +t.scale *(1-k);                 // scale interpolation
         rotate.slerp(this->rotate, t.rotate, k);                        // spherical linear interpolation for quaternions
        // result.rotate = this->rotate.mix_with(b.rotate, k);
-        result.translate = this->translate * k+t.translate * (1-k);     // translation interpolation
+        result.position = this->position * k+t.position * (1-k);     // translation interpolation
         return result;
     }
 
 
     Transform operator*(Transform& local)
     {
-        Transform res_test1 = Transform(this->rotate * local.rotate, this->translate + local.translate, this->scale * local.scale);
-        Transform res_test2 = Transform( local.rotate * this->rotate,  local.translate + this->translate, local.scale * this->scale);
+        Transform res_test1 = Transform(this->rotate * local.rotate, this->position + local.position, this->scale * local.scale);
+        Transform res_test2 = Transform( local.rotate * this->rotate,  local.position + this->position, local.scale * this->scale);
 
         return res_test1;
         //return this->combine_with(local);

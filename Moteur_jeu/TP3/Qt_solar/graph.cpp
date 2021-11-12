@@ -20,13 +20,11 @@ void Graph::update_worldTransforms(gameObject* obj)
 
     if(this->root->id == obj->id)
     {
-        obj->world_transform = obj->transform;
+        obj->transform.matrix = obj->transform.getLocalModelMatrix();
     }
     else
     {
-        //qDebug() << "changement de world_transform pour " << obj->name.c_str() << "\n";
-
-        obj->world_transform =  obj->parent->world_transform * obj->transform ; //obj->transform.combine_with(obj->parent->world_transform); // multiply current local with parents's world transform
+        obj->transform.matrix =  obj->parent->transform.matrix * obj->transform.getLocalModelMatrix() ;
     }
 
     for (unsigned int i=0; i < obj->children.size(); i++ )
@@ -76,10 +74,11 @@ void Graph::update_scene(){
 
 void Graph::draw_elements(gameObject &obj, QOpenGLShaderProgram& shaderProgram){
 
+    shaderProgram.setUniformValue("transform",  obj.transform.matrix);
     obj.Draw(shaderProgram);
 
-    for (auto game_object : obj.children ) {
-           draw_elements(*game_object, shaderProgram);
+    for (auto &child : obj.children ) {
+           draw_elements(*child, shaderProgram);
     }
 }
 
@@ -87,6 +86,8 @@ void Graph::draw_elements(gameObject &obj, QOpenGLShaderProgram& shaderProgram){
 
 void Graph::draw_graph(QOpenGLShaderProgram& shaderProgram){
     draw_elements(*this->root, shaderProgram);
+
+
 
 //    for(auto gameObj : root->children)
 //        gameObj.Draw(shaderProgram);
