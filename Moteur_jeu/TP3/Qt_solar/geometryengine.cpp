@@ -100,43 +100,11 @@ GeometryEngine::~GeometryEngine()
 //!
 
 
-void GeometryEngine::initSphereGeometry(){
-
-    std::vector<VertexData> points;
-    std::string meshLocation = "../TP3/Qt_solar/sphere.obj";
-    std::vector<QVector3D> sphere(Mesh::loadOBJ(meshLocation));
-    points.reserve(sphere.size());
-
-
-    for ( auto a : sphere ) {
-        VertexData t = VertexData();
-        t.position = a;
-       // qDebug("%f, %f, %f", a.x(), a.y(), a.z());
-       // t.texCoord = ??
-        points.push_back(t);
-    }
-
-    VertexData vertex[points.size()];
-    for(unsigned int i =0; i< points.size(); i++){
-        vertex[i].position = points[i].position;
-        vertex[i].texCoord = points[i].texCoord;
-    }
-
-    GLushort indices[points.size()];
-    for (unsigned int i = 0 ; i < points.size() ; i++ ) {
-        indices[i] = i;
-    }
-
-
-   arrayBuf.bind();
-   arrayBuf.allocate(vertex, points.size() * sizeof(VertexData));
-
-   //  Transfer index data to VBO 1
-    indexBuf.bind();
-    indexBuf.allocate(indices,  points.size()* sizeof(GLushort));
+void initSphereGeometry(std::vector<VertexData>& points, std::vector<GLushort>& indices){
 
 
 }
+
 
 void GeometryEngine::initCubeGeometry(int nH,int nW, int boardSizeX,int  boardSizeY, std::vector<VertexData>& points, std::vector<GLushort>& indices)
 {

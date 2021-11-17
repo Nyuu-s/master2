@@ -20,7 +20,7 @@ uniform sampler2D rock;
 //! [0]
 void main()
 {
-    float height = texture2D(heightmap, a_texcoord).p;
+   // float height = texture2D(heightmap, a_texcoord).p;
 
     // Calculate vertex position in screen space
 

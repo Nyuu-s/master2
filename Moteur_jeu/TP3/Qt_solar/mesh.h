@@ -1,7 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include"BasicIO.h"
+#include"BasicIO.hpp"
 #include"geometryengine.h"
 #include"componnent.h"
 #include"transform.h"
@@ -26,7 +26,8 @@ public:
     Mesh(std::vector<VertexData>& vertices);
     ~Mesh();
     void Draw(QOpenGLShaderProgram& shaderProgram, std::vector<VertexData> &tempV );
-    static std::vector<QVector3D> loadOBJ(std::string filename);
+
+    static void loadOBJ(std::string filename, std::vector<QVector3D>& sphere, std::vector<std::vector<unsigned int>>& face);
 
     VertexData* VertextoArray(VertexData* arr, std::vector<VertexData> &tempV);
     unsigned short* IndextoArray(unsigned short* arr);

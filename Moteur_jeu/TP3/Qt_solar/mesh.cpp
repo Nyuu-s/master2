@@ -76,15 +76,14 @@ Mesh::Mesh(std::vector<VertexData>& vertex) : indexBuffer(QOpenGLBuffer::IndexBu
     vertexBuffer.create();
     indexBuffer.create();
 
-
 }
 
-std::vector<QVector3D> Mesh::loadOBJ(std::string filename){
-     std::vector<QVector3D>  points;
+void Mesh::loadOBJ(std::string filename, std::vector<QVector3D>& sphere ,std::vector<std::vector<unsigned int>>& face){
+    //std::vector<QVector3D>  points;
     //std::vector< std::vector<int>> faces;
-    OBJIO::open(filename, points);
+    OFFIO::open(filename, sphere, face, true);
 
-    return points;
+   // return points;
 
 }
 
@@ -105,9 +104,9 @@ void Mesh::Draw(QOpenGLShaderProgram& shaderProgram, std::vector<VertexData> &te
 
       GeometryEngine geo = GeometryEngine();
       VertexData v[this->vertices.size()];
-      GLushort i[this->indices.size()];
+      GLushort arr[this->indices.size()];
 
-      geo.drawCubeGeometry(&shaderProgram, this->VertextoArray(v, tempV), this->IndextoArray(i), this->vertexNumber, this->indexNumber);
+      geo.drawCubeGeometry(&shaderProgram, this->VertextoArray(v, tempV), this->IndextoArray(arr), this->vertexNumber, this->indexNumber);
 
 //    VertexData vertices_arr[vertices.size()];
 //    this->VertextoArray(vertices_arr);

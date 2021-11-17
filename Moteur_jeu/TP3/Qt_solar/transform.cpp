@@ -31,7 +31,6 @@ QMatrix4x4 Transform::getLocalModelMatrix(){
     modelMatrix(2,3) = position.z();
     modelMatrix(3,3) = 1;
 
-
     return modelMatrix;
 
 }

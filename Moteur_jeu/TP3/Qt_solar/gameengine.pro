@@ -15,6 +15,7 @@ SOURCES += \
 
 HEADERS += \
     BasicIO.h \
+    BasicIO.hpp \
     componnent.h \
     gameObject.h \
     graph.h \

@@ -60,7 +60,7 @@
 #include "gameObject.h"
 #include "transform.h"
 #include "graph.h"
-#include<BasicIO.h>
+#include<BasicIO.hpp>
 
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -80,16 +80,21 @@ void MainWidget::initGraph(int nb_mesh){
     this->meshList = (new std::vector<Mesh*>(nb_mesh));
 
     geometries = new GeometryEngine;
-    QQuaternion q = QQuaternion::fromAxisAndAngle   (0.f, 1.0f, 0.0f, 0.5);
+   // QQuaternion q = QQuaternion::fromAxisAndAngle   (0.f, 1.0f, 0.0f, 0.5);
    // QQuaternion s = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 0.0f, 0.5);
 
 
     //GameObject( Transform T, child_number, component_number, ID, name)
 
-    gameObject*  World  =   new gameObject(Transform(), 1, 1, 0, "world");
-    Soleil =    new   gameObject(Transform(q, QVector3D(0,0,0), 1),9,9, 1,   "soleil"); // local transform par rapport au monde
-    Terre  =    new   gameObject(Transform(QQuaternion(), QVector3D(3,0,0), 1),1,1, 2,   "Terre"); // local transform par rapport au soleil
-    Lune   =    new   gameObject(Transform(QQuaternion(), QVector3D(3,0,0), 0.5),0,1, 3, "Lune");
+    gameObject*  World  =    new    gameObject(Transform(), 1, 1, 0, "world");
+    SolarSystem         =    new    gameObject(Transform(QQuaternion(), QVector3D(0,0,0), 1),9,9, 1,   "systeme solaire");
+    Soleil              =    new    gameObject(Transform(QQuaternion(), QVector3D(0,0,0), 6),9,9, 2,   "soleil"); // local transform par rapport au monde
+
+    OrbiteTerre         =    new    gameObject(Transform(QQuaternion(), QVector3D(10,0,0), 1),9,9, 3,   "orbite terrestre");
+    Terre               =    new    gameObject(Transform(QQuaternion(), QVector3D(0,0,0), 1),1,1, 4,   "Terre"); // local transform par rapport au soleil
+
+    OrbiteLune          =    new    gameObject(Transform(QQuaternion(), QVector3D(3,0,0), 1),1,1, 4,   "orbite lunaire");
+    Lune                =    new    gameObject(Transform(QQuaternion(), QVector3D(0,0,0), 0.5),0,1, 6, "Lune");
 //    gameObject Venus = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
 //    gameObject Mars = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
 
@@ -105,31 +110,19 @@ void MainWidget::initGraph(int nb_mesh){
     terreMesh = new Mesh(v, index);
     luneMesh = new Mesh(v, index);
 
-    soleilMesh ->id = 777;
 
-//    soleilMesh->vertices = v;
-
-
-
-   // v.clear();
-   // index.clear();
-    // GeometryEngine::initCubeGeometry(64, 64, 1, 1,v, index);
-
-
-// l'odre importe car addchild n'ajoute pas dans une liste de pointeur mais une liste d'obj
-
-//    this->meshList->push_back(soleilMesh);
-//    this->meshList->push_back(terreMesh);
-
-    Lune->setParent(Terre);
+    Lune->setParent(OrbiteLune);
     Lune->addComponent(luneMesh);
+    OrbiteLune->setParent(OrbiteTerre);
 
     Terre->addComponent(terreMesh);
-    Terre->setParent(Soleil); // use setParent and not addchild, store a pointer list and not object list
+    Terre->setParent(OrbiteTerre); // use setParent and not addchild, store a pointer list and not object list
+    OrbiteTerre->setParent(SolarSystem);
 
     Soleil->addComponent(soleilMesh);
-    Soleil->setParent(World);
+    Soleil->setParent(SolarSystem);
 
+    SolarSystem->setParent(World);
 
     graphScene = new Graph(World);
 
@@ -170,20 +163,57 @@ void MainWidget::initGraph(int nb_mesh){
 }
 
 void MainWidget::initSphereGeometry(std::vector<VertexData>& points, std::vector<GLushort>& indices){
-    std::string meshLocation = "../TP3/Qt_solar/sphere.obj";
-    std::vector<QVector3D> sphere(Mesh::loadOBJ(meshLocation));
+
+    std::string meshLocation = "../TP3/Qt_solar/sphere.off";
+    std::vector<QVector3D> sphere;
+    std::vector<std::vector<unsigned int>> face;
+
+    Mesh::loadOBJ(meshLocation, sphere, face);
+
     points.reserve(sphere.size());
-    indices.reserve(sphere.size());
+    indices.reserve(face.size()*3);
 
     GLushort i = 0;
     for ( auto a : sphere ) {
         VertexData t = VertexData();
         t.position = a;
         //qDebug("%f, %f, %f hdshv", a.x(), a.y(), a.z());
-       // t.texCoord = ??
+        t.texCoord = QVector2D(
+                                a.x() + a.y(),
+                                a.x() + a.z()
+                               );
         points.push_back(t);
-        indices.push_back(i++);
+       // indices.push_back(i++);
+           indices[i]   = face[i / 3][0];
+           indices[i+1] = face[i / 3][1];
+           indices[i+2] = face[i / 3][2];
+           i+=3;
     }
+
+
+
+//       std::vector<QVector3D> v;
+
+//       unsigned int vertexNumber = sphere.size();
+//       unsigned int indexCount = indices.size() * 3;
+
+
+//       for (unsigned int i = 0; i < sphere.size(); i++) {
+//           points[i] = {
+//                   sphere[i],
+//                   QVector2D(
+//                           sphere[i][0] + sphere[i][1],
+//                           sphere[i][0] + sphere[i][2]
+//                   )
+//           };
+//       }
+
+//       for (unsigned int i = 0; i < sphere.size(); i ++) {
+//           indices[i]   = face[i / 3][0];
+//           indices[i+1] = face[i / 3][1];
+//           indices[i+2] = face[i / 3][2];
+//       }
+
 
 }
 
@@ -311,7 +341,7 @@ void MainWidget::initializeGL()
 
     // Enable back face culling
     glEnable(GL_CULL_FACE);
-   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
 //! [2]
 
 
@@ -421,13 +451,17 @@ void MainWidget::paintGL()
 
     // Use texture unit 0 which contains cube.png
     program.setUniformValue("texture", 0);
-    program.setUniformValue("rock", 2);
-    program.setUniformValue("snow", 3);
-    program.setUniformValue("heightmap", 1);
+//    program.setUniformValue("rock", 2);
+//    program.setUniformValue("snow", 3);
+//    program.setUniformValue("heightmap", 1);
    // qDebug() << graphScene->root->id << " " << graphScene->root->name.c_str();
    Soleil->transform.rotate *= QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 0.5);
-   Terre->transform.rotate  *= QQuaternion::fromAxisAndAngle(.0f, 1.0f, 0.0f, 0.5);
-   Lune->transform.rotate  *= QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
+   Terre->transform.rotate  *= QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.23f, 0.5);
+   //Lune->transform.rotate  *= QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
+
+   SolarSystem->transform.rotate *=  QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
+   OrbiteTerre->transform.rotate *= QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
+   OrbiteLune->transform.rotate *= QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
 
 
 
