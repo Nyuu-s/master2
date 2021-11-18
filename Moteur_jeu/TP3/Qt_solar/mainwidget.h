@@ -103,6 +103,7 @@ private:
     gameObject* SolarSystem;
     gameObject* OrbiteTerre;
     gameObject* OrbiteLune;
+    gameObject*     Camera;
 
     Mesh *soleilMesh; // TODO une liste de tout les mesh de la futur scene (pour delete)
     Mesh *terreMesh;

@@ -78,9 +78,15 @@ Transform Transform::combine_with(Transform &t)
 }
 
 
-Transform Transform::inverse(){
-    Transform res = Transform( rotate.inverted(), -position, 1/scale);
-    return res;
+QMatrix4x4 Transform::inverseWorld(){
+    return matrix.inverted();
+
+}
+
+QVector3D Transform::getWorldTranslate(){
+    return QVector3D(this->matrix(0,3), this->matrix(1,3), this->matrix(2,3));
+
+
 }
 
 

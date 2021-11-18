@@ -60,6 +60,7 @@
 #include "gameObject.h"
 #include "transform.h"
 #include "graph.h"
+#include "camera.h"
 #include<BasicIO.hpp>
 
 
@@ -88,6 +89,8 @@ void MainWidget::initGraph(int nb_mesh){
 
     gameObject*  World  =    new    gameObject(Transform(), 1, 1, 0, "world");
     SolarSystem         =    new    gameObject(Transform(QQuaternion(), QVector3D(0,0,0), 1),9,9, 1,   "systeme solaire");
+    Camera              =    new    gameObject(Transform(QQuaternion(), QVector3D(0,0,0), 1),1,1, 888, "camera");
+
     Soleil              =    new    gameObject(Transform(QQuaternion(), QVector3D(0,0,0), 6),9,9, 2,   "soleil"); // local transform par rapport au monde
 
     OrbiteTerre         =    new    gameObject(Transform(QQuaternion(), QVector3D(10,0,0), 1),9,9, 3,   "orbite terrestre");
@@ -115,12 +118,16 @@ void MainWidget::initGraph(int nb_mesh){
     Lune->addComponent(luneMesh);
     OrbiteLune->setParent(OrbiteTerre);
 
+    Camera->setParent(Terre);
+
     Terre->addComponent(terreMesh);
     Terre->setParent(OrbiteTerre); // use setParent and not addchild, store a pointer list and not object list
     OrbiteTerre->setParent(SolarSystem);
 
     Soleil->addComponent(soleilMesh);
     Soleil->setParent(SolarSystem);
+
+
 
     SolarSystem->setParent(World);
 
@@ -183,11 +190,11 @@ void MainWidget::initSphereGeometry(std::vector<VertexData>& points, std::vector
                                 a.x() + a.z()
                                );
         points.push_back(t);
-       // indices.push_back(i++);
-           indices[i]   = face[i / 3][0];
-           indices[i+1] = face[i / 3][1];
-           indices[i+2] = face[i / 3][2];
-           i+=3;
+        indices.push_back(i++);
+//           indices[i]   = face[i / 3][0];
+//           indices[i+1] = face[i / 3][1];
+//           indices[i+2] = face[i / 3][2];
+//           i+=3;
     }
 
 
@@ -442,7 +449,6 @@ void MainWidget::paintGL()
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
-    program.setUniformValue("mvp_matrix", projection * matrix);
 //! [6]
 //!
 //!
@@ -462,6 +468,7 @@ void MainWidget::paintGL()
    SolarSystem->transform.rotate *=  QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
    OrbiteTerre->transform.rotate *= QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
    OrbiteLune->transform.rotate *= QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
+   Camera->transform.rotate *= QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
 
 
 
@@ -469,7 +476,10 @@ void MainWidget::paintGL()
 
     graphScene->update_scene();
 
-
+   // matrix.lookAt( Camera->transform.getWorldTranslate(),QVector3D(0,1,0) ,QVector3D(0,0,1.0) );
+    matrix = Camera->transform.matrix ;
+    matrix.lookAt(QVector3D(0,1.0,0), Terre->transform.getWorldTranslate(), QVector3D(0,0,1.0));
+    program.setUniformValue("mvp_matrix", projection * matrix);
 
     //graphScene->update_scene();
     update();

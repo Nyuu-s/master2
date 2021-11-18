@@ -34,13 +34,13 @@ public:
 
 
 
-
+    QVector3D getWorldTranslate();
     QVector4D apply(QVector4D p);
     QVector3D applyToPoint(QVector3D  p);
     QVector3D applyToVector(QVector3D v);
     QVector3D applyToVersor(QVector3D v);
     Transform combine_with(Transform &t);
-    Transform inverse();
+    QMatrix4x4 inverseWorld();
 
     Transform interpolate(Transform &t, float k){
         Transform result;

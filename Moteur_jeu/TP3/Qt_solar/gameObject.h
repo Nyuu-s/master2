@@ -24,12 +24,13 @@ public:
     Transform transform;
     Transform world_transform;
     gameObject();
+    ~gameObject();
     gameObject( Transform t, int n, int m, int id, std::string s);
-
     void print();
     void copy(const gameObject& src, gameObject& dst);
     void addComponent(Component *c);
     void addChild(gameObject *a); // to remove
+    virtual void isUseless();
 
 
     void setParent(gameObject* a); // et child also

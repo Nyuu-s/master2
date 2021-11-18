@@ -2,7 +2,6 @@
 
 
 
-
 Graph::Graph(gameObject *obj)
 
 {
@@ -24,8 +23,15 @@ void Graph::update_worldTransforms(gameObject* obj)
     }
     else
     {
+        Camera* cam = dynamic_cast<Camera*>(obj);
         obj->transform.matrix =  obj->parent->transform.matrix * obj->transform.getLocalModelMatrix() ;
+        if(cam != nullptr){
+            cam->transform.inverseWorld();
+
+        }
     }
+
+    //obj.transform.rotate *=
 
     for (unsigned int i=0; i < obj->children.size(); i++ )
     {
