@@ -81,13 +81,8 @@ void MainWidget::initGraph(int nb_mesh){
     this->meshList = (new std::vector<Mesh*>(nb_mesh));
 
     geometries = new GeometryEngine;
-   // QQuaternion q = QQuaternion::fromAxisAndAngle   (0.f, 1.0f, 0.0f, 0.5);
-   // QQuaternion s = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 0.0f, 0.5);
 
-
-    //GameObject( Transform T, child_number, component_number, ID, name)
-
-    gameObject*  World  =    new    gameObject(Transform(), 1, 1, 0, "world");
+    World               =    new    gameObject(Transform(), 1, 1, 0, "world");
     SolarSystem         =    new    gameObject(Transform(QQuaternion(), QVector3D(0,0,0), 1),9,9, 1,   "systeme solaire");
     Camera              =    new    gameObject(Transform(QQuaternion(), QVector3D(0,0,0), 1),1,1, 888, "camera");
 
@@ -98,12 +93,6 @@ void MainWidget::initGraph(int nb_mesh){
 
     OrbiteLune          =    new    gameObject(Transform(QQuaternion(), QVector3D(3,0,0), 1),1,1, 4,   "orbite lunaire");
     Lune                =    new    gameObject(Transform(QQuaternion(), QVector3D(0,0,0), 0.5),0,1, 6, "Lune");
-//    gameObject Venus = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
-//    gameObject Mars = gameObject(Transform(QQuaternion(), QVector3D(), 1),1,1);
-
-
-
-
 
     std::vector<VertexData> v;
     std::vector<GLushort> index;
@@ -121,52 +110,15 @@ void MainWidget::initGraph(int nb_mesh){
     Camera->setParent(Terre);
 
     Terre->addComponent(terreMesh);
-    Terre->setParent(OrbiteTerre); // use setParent and not addchild, store a pointer list and not object list
+    Terre->setParent(OrbiteTerre);
     OrbiteTerre->setParent(SolarSystem);
 
     Soleil->addComponent(soleilMesh);
     Soleil->setParent(SolarSystem);
 
-
-
     SolarSystem->setParent(World);
 
     graphScene = new Graph(World);
-
-    //Soleil->applyTransform(Soleil->transform);
-    //Soleil->transform = Transform();
-
-    //Terre->applyTransform(Terre->transform);
-    //terreMesh->vertices = v;
-     //Terre->transform.translate = QVector3D();
-
-
-    // Lune->applyTransform(Lune->transform);
-    // luneMesh->vertices = v;
-    //Lune->transform.translate = QVector3D();
-   // Lune->transform.scale = 1;
-
-
-
-    Soleil->id = 777;
-
-
-
-
-    //potentiel probleme : si tout les objet on le meme mesh apres une transformation tous les mesh sont mis a jour ?
-    //maybe faire x instance de planet.
-//    Soleil.addComponent(planet);
-//    Mercure.addComponent(planet);
-//    Venus.addComponent(planet);
-//    Mars.addComponent(planet);
-//    Terre.addComponent(planet);
-
-
-//    Soleil.addChild(Mercure);
-//    Soleil.addChild(Venus);
-//    Soleil.addChild(Mars);
-//    Soleil.addChild(Terre);
-
 }
 
 void MainWidget::initSphereGeometry(std::vector<VertexData>& points, std::vector<GLushort>& indices){
@@ -184,7 +136,6 @@ void MainWidget::initSphereGeometry(std::vector<VertexData>& points, std::vector
     for ( auto a : sphere ) {
         VertexData t = VertexData();
         t.position = a;
-        //qDebug("%f, %f, %f hdshv", a.x(), a.y(), a.z());
         t.texCoord = QVector2D(
                                 a.x() + a.y(),
                                 a.x() + a.z()
@@ -198,30 +149,6 @@ void MainWidget::initSphereGeometry(std::vector<VertexData>& points, std::vector
     }
 
 
-
-//       std::vector<QVector3D> v;
-
-//       unsigned int vertexNumber = sphere.size();
-//       unsigned int indexCount = indices.size() * 3;
-
-
-//       for (unsigned int i = 0; i < sphere.size(); i++) {
-//           points[i] = {
-//                   sphere[i],
-//                   QVector2D(
-//                           sphere[i][0] + sphere[i][1],
-//                           sphere[i][0] + sphere[i][2]
-//                   )
-//           };
-//       }
-
-//       for (unsigned int i = 0; i < sphere.size(); i ++) {
-//           indices[i]   = face[i / 3][0];
-//           indices[i+1] = face[i / 3][1];
-//           indices[i+2] = face[i / 3][2];
-//       }
-
-
 }
 
 MainWidget::~MainWidget()
@@ -231,9 +158,16 @@ MainWidget::~MainWidget()
     makeCurrent();
     delete soleilMesh;
     delete terreMesh;
-    for(auto ptr : *meshList){
-        delete ptr;
-    }
+    delete luneMesh;
+    delete World;
+    delete SolarSystem;
+    delete Soleil;
+    delete OrbiteTerre;
+    delete OrbiteLune;
+    delete Terre;
+    delete Lune;
+
+
     delete meshList;
     delete texture;
     delete heightmap;
@@ -463,7 +397,7 @@ void MainWidget::paintGL()
    // qDebug() << graphScene->root->id << " " << graphScene->root->name.c_str();
    Soleil->transform.rotate *= QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 0.5);
    Terre->transform.rotate  *= QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.23f, 0.5);
-   //Lune->transform.rotate  *= QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
+   Lune->transform.rotate  *= QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
 
    SolarSystem->transform.rotate *=  QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
    OrbiteTerre->transform.rotate *= QQuaternion::fromAxisAndAngle(0.0,1.0,0.0,0.5);
@@ -476,17 +410,8 @@ void MainWidget::paintGL()
 
     graphScene->update_scene();
 
-   // matrix.lookAt( Camera->transform.getWorldTranslate(),QVector3D(0,1,0) ,QVector3D(0,0,1.0) );
-    matrix = Camera->transform.matrix ;
-    matrix.lookAt(QVector3D(0,1.0,0), Terre->transform.getWorldTranslate(), QVector3D(0,0,1.0));
     program.setUniformValue("mvp_matrix", projection * matrix);
 
-    //graphScene->update_scene();
     update();
 
-    // Draw plane geometry
-
-    //geometries->drawCubeGeometry(&program);
-
-   // geometries->drawSphereGeometry(&program);
 }

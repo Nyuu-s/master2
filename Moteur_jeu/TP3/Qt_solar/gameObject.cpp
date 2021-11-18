@@ -45,24 +45,7 @@ void gameObject::removeChild(gameObject* child){
     }
 }
 
-void gameObject::applyTransform(Transform &t)
-{
-        for(Component *component : this->components){
-            qDebug() << "transform scene...";
-            Mesh* mesh = dynamic_cast<Mesh*>(component);
 
-            if (mesh != nullptr){
-                qDebug()<< "EST UN MESH";
-                mesh->applyTransform(t, mesh->vertices);
-            }
-            else
-                qDebug()<<"PAS UN MESH";
-        }
-
-        for(auto &obj : children){
-            obj->applyTransform(t);
-        }
-}
 
 void gameObject::print(){
     qDebug("%s\n", this->name.c_str());
@@ -80,22 +63,11 @@ void gameObject::Draw(QOpenGLShaderProgram& shaderProgram){
     for (auto component : this->components ) {
 
         Mesh* mesh = dynamic_cast<Mesh*>(component);
-       // mesh->applyTransform(transform, mesh->vertices);
 
 
         if (mesh != nullptr)
         {
-            //std::vector<VertexData> tempV = std::vector<VertexData>(mesh->vertices);
-           // mesh->applyTransform(transform, mesh->vertices);
-           // QQuaternion q = QQuaternion::fromAxisAndAngle   (0.f, 1.0f, 0.0f, 0.5);
-           // mesh->applyTransform(Transform(q, QVector3D(0,0,0), 1), mesh->vertices);
-            //mesh->applyTransform(world_transform, tempV);
-
-
-           // qDebug() << this->name.c_str() << tempV[0].position[0] << " " << tempV[0].position[1] << tempV[0].position[2];
-
             mesh->Draw(shaderProgram, mesh->vertices);
-
         }
         else
             qDebug()<<"Not a mesh impossible to draw --> implement a draw function for your object";

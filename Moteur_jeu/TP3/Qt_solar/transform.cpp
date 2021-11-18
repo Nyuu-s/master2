@@ -15,11 +15,6 @@ Transform::Transform( QQuaternion r, QVector3D trans, float s)
         position(trans)
 
 {
-//    matrix = (QMatrix4x4(rotate.toRotationMatrix()) * scale );
-//    matrix(0,3) = position.x();
-//    matrix(1,3) = position.y();
-//    matrix(2,3) = position.z();
-//    matrix(3,3) = 1;
 
 }
 
@@ -56,16 +51,9 @@ QVector3D Transform::applyToVersor(QVector3D v)
 
 QVector4D Transform::apply(QVector4D p){
 
-//    QMatrix4x4 e = QMatrix4x4(rotate.toRotationMatrix());
-
-//    e(3,0) = 0;
-//    e(3,1) = 0;
-//    e(3,2) = 0;
-//    e(3,3) = 1.0;
-
     QVector3D t = QVector3D(p.x(), p.y(), p.z());
     t = (rotate.rotatedVector(t) + position )* scale;
-            //???scale * ( e * p) + translate
+
     return QVector4D(t.x(), t.y(), t.z(), p.w());
 }
 

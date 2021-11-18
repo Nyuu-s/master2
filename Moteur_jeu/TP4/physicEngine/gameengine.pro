@@ -7,6 +7,7 @@ SOURCES += main.cpp \
     BoundingSphere.cpp \
     aabb.cpp \
     camera.cpp \
+    collider.cpp \
     gameObject.cpp \
     graph.cpp \
     intersectdata.cpp \
@@ -21,11 +22,11 @@ SOURCES += \
     geometryengine.cpp
 
 HEADERS += \
-    BasicIO.h \
     BasicIO.hpp \
     BoundingSphere.h \
     aabb.h \
     camera.h \
+    collider.h \
     componnent.h \
     gameObject.h \
     graph.h \

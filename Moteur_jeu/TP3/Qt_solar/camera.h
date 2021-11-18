@@ -6,9 +6,10 @@
 
 class Camera : public gameObject
 {
-public: 
+public:
     Camera();
-    void isUsless(){};
+    ~Camera();
+
     QVector3D up;
     QVector3D position;
 

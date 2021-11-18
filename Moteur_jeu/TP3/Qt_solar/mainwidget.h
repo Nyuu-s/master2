@@ -97,6 +97,7 @@ private:
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
 
+    gameObject* World;
     gameObject* Soleil;
     gameObject* Lune;
     gameObject* Terre;

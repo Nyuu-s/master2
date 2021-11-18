@@ -3,11 +3,13 @@
 
 #include <QVector3D>
 #include "intersectdata.h"
+#include "collider.h"
 
-class BoundingSphere
+class BoundingSphere : public Collider
 {
 public:
     BoundingSphere(const QVector3D& center, float radius) :
+    Collider(Collider::TYPE_SPHERE),
     m_center(center),
     m_radius(radius)
     {};

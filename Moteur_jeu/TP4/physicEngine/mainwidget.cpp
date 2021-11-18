@@ -141,7 +141,12 @@ void MainWidget::initSphereGeometry(std::vector<VertexData>& points, std::vector
     Mesh::loadOBJ(meshLocation, sphere, face);
 
     points.reserve(sphere.size());
+    points.clear();
     indices.reserve(face.size()*3);
+
+//    for(unsigned int i =0; i<sphere.size(); i++){
+//        points[i] = { sphere[i], QVector2D(sphere[i].x() + sphere[i].y(), sphere[i].x() + sphere[i].z()   )};
+//    }
 
     GLushort i = 0;
     for ( auto a : sphere ) {

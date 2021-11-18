@@ -5,6 +5,9 @@ Camera::Camera()
 
 }
 
-void gameObject::isUseless(){
+Camera::~Camera(){
 
 }
+
+
+

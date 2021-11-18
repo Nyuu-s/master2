@@ -56,6 +56,7 @@ SOURCES       = ../TP4/physicEngine/main.cpp \
 		../TP4/physicEngine/BoundingSphere.cpp \
 		../TP4/physicEngine/aabb.cpp \
 		../TP4/physicEngine/camera.cpp \
+		../TP4/physicEngine/collider.cpp \
 		../TP4/physicEngine/gameObject.cpp \
 		../TP4/physicEngine/graph.cpp \
 		../TP4/physicEngine/intersectdata.cpp \
@@ -73,6 +74,7 @@ OBJECTS       = main.o \
 		BoundingSphere.o \
 		aabb.o \
 		camera.o \
+		collider.o \
 		gameObject.o \
 		graph.o \
 		intersectdata.o \
@@ -164,11 +166,11 @@ DIST          = ../TP4/physicEngine/grass.png \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../TP4/TP4/physicEngine/gameengine.pro ../TP4/physicEngine/BasicIO.h \
-		../TP4/physicEngine/BasicIO.hpp \
+		../TP4/TP4/physicEngine/gameengine.pro ../TP4/physicEngine/BasicIO.hpp \
 		../TP4/physicEngine/BoundingSphere.h \
 		../TP4/physicEngine/aabb.h \
 		../TP4/physicEngine/camera.h \
+		../TP4/physicEngine/collider.h \
 		../TP4/physicEngine/componnent.h \
 		../TP4/physicEngine/gameObject.h \
 		../TP4/physicEngine/graph.h \
@@ -183,6 +185,7 @@ DIST          = ../TP4/physicEngine/grass.png \
 		../TP4/physicEngine/BoundingSphere.cpp \
 		../TP4/physicEngine/aabb.cpp \
 		../TP4/physicEngine/camera.cpp \
+		../TP4/physicEngine/collider.cpp \
 		../TP4/physicEngine/gameObject.cpp \
 		../TP4/physicEngine/graph.cpp \
 		../TP4/physicEngine/intersectdata.cpp \
@@ -381,8 +384,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../TP4/physicEngine/models.qrc ../TP4/physicEngine/shaders.qrc ../TP4/physicEngine/textures.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../TP4/physicEngine/BasicIO.h ../TP4/physicEngine/BasicIO.hpp ../TP4/physicEngine/BoundingSphere.h ../TP4/physicEngine/aabb.h ../TP4/physicEngine/camera.h ../TP4/physicEngine/componnent.h ../TP4/physicEngine/gameObject.h ../TP4/physicEngine/graph.h ../TP4/physicEngine/intersectdata.h ../TP4/physicEngine/mainwidget.h ../TP4/physicEngine/geometryengine.h ../TP4/physicEngine/mesh.h ../TP4/physicEngine/physicobject.h ../TP4/physicEngine/physicsengine.h ../TP4/physicEngine/plane.h ../TP4/physicEngine/transform.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../TP4/physicEngine/main.cpp ../TP4/physicEngine/BoundingSphere.cpp ../TP4/physicEngine/aabb.cpp ../TP4/physicEngine/camera.cpp ../TP4/physicEngine/gameObject.cpp ../TP4/physicEngine/graph.cpp ../TP4/physicEngine/intersectdata.cpp ../TP4/physicEngine/mesh.cpp ../TP4/physicEngine/physicobject.cpp ../TP4/physicEngine/physicsengine.cpp ../TP4/physicEngine/plane.cpp ../TP4/physicEngine/transform.cpp ../TP4/physicEngine/mainwidget.cpp ../TP4/physicEngine/geometryengine.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../TP4/physicEngine/BasicIO.hpp ../TP4/physicEngine/BoundingSphere.h ../TP4/physicEngine/aabb.h ../TP4/physicEngine/camera.h ../TP4/physicEngine/collider.h ../TP4/physicEngine/componnent.h ../TP4/physicEngine/gameObject.h ../TP4/physicEngine/graph.h ../TP4/physicEngine/intersectdata.h ../TP4/physicEngine/mainwidget.h ../TP4/physicEngine/geometryengine.h ../TP4/physicEngine/mesh.h ../TP4/physicEngine/physicobject.h ../TP4/physicEngine/physicsengine.h ../TP4/physicEngine/plane.h ../TP4/physicEngine/transform.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../TP4/physicEngine/main.cpp ../TP4/physicEngine/BoundingSphere.cpp ../TP4/physicEngine/aabb.cpp ../TP4/physicEngine/camera.cpp ../TP4/physicEngine/collider.cpp ../TP4/physicEngine/gameObject.cpp ../TP4/physicEngine/graph.cpp ../TP4/physicEngine/intersectdata.cpp ../TP4/physicEngine/mesh.cpp ../TP4/physicEngine/physicobject.cpp ../TP4/physicEngine/physicsengine.cpp ../TP4/physicEngine/plane.cpp ../TP4/physicEngine/transform.cpp ../TP4/physicEngine/mainwidget.cpp ../TP4/physicEngine/geometryengine.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -454,6 +457,7 @@ moc_mainwidget.cpp: ../TP4/physicEngine/mainwidget.h \
 		../TP4/physicEngine/physicobject.h \
 		../TP4/physicEngine/BoundingSphere.h \
 		../TP4/physicEngine/intersectdata.h \
+		../TP4/physicEngine/collider.h \
 		../TP4/physicEngine/physicsengine.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -488,11 +492,13 @@ main.o: ../TP4/physicEngine/main.cpp ../TP4/physicEngine/mainwidget.h \
 		../TP4/physicEngine/physicobject.h \
 		../TP4/physicEngine/BoundingSphere.h \
 		../TP4/physicEngine/intersectdata.h \
+		../TP4/physicEngine/collider.h \
 		../TP4/physicEngine/physicsengine.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../TP4/physicEngine/main.cpp
 
 BoundingSphere.o: ../TP4/physicEngine/BoundingSphere.cpp ../TP4/physicEngine/BoundingSphere.h \
-		../TP4/physicEngine/intersectdata.h
+		../TP4/physicEngine/intersectdata.h \
+		../TP4/physicEngine/collider.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BoundingSphere.o ../TP4/physicEngine/BoundingSphere.cpp
 
 aabb.o: ../TP4/physicEngine/aabb.cpp ../TP4/physicEngine/aabb.h \
@@ -509,6 +515,10 @@ camera.o: ../TP4/physicEngine/camera.cpp ../TP4/physicEngine/camera.h \
 		../TP4/physicEngine/geometryengine.h \
 		../TP4/physicEngine/componnent.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o camera.o ../TP4/physicEngine/camera.cpp
+
+collider.o: ../TP4/physicEngine/collider.cpp ../TP4/physicEngine/collider.h \
+		../TP4/physicEngine/intersectdata.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o collider.o ../TP4/physicEngine/collider.cpp
 
 gameObject.o: ../TP4/physicEngine/gameObject.cpp ../TP4/physicEngine/gameObject.h \
 		../TP4/physicEngine/transform.h \
@@ -542,18 +552,21 @@ mesh.o: ../TP4/physicEngine/mesh.cpp ../TP4/physicEngine/mesh.h \
 
 physicobject.o: ../TP4/physicEngine/physicobject.cpp ../TP4/physicEngine/physicobject.h \
 		../TP4/physicEngine/BoundingSphere.h \
-		../TP4/physicEngine/intersectdata.h
+		../TP4/physicEngine/intersectdata.h \
+		../TP4/physicEngine/collider.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o physicobject.o ../TP4/physicEngine/physicobject.cpp
 
 physicsengine.o: ../TP4/physicEngine/physicsengine.cpp ../TP4/physicEngine/physicsengine.h \
 		../TP4/physicEngine/physicobject.h \
 		../TP4/physicEngine/BoundingSphere.h \
-		../TP4/physicEngine/intersectdata.h
+		../TP4/physicEngine/intersectdata.h \
+		../TP4/physicEngine/collider.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o physicsengine.o ../TP4/physicEngine/physicsengine.cpp
 
 plane.o: ../TP4/physicEngine/plane.cpp ../TP4/physicEngine/plane.h \
 		../TP4/physicEngine/intersectdata.h \
-		../TP4/physicEngine/BoundingSphere.h
+		../TP4/physicEngine/BoundingSphere.h \
+		../TP4/physicEngine/collider.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o plane.o ../TP4/physicEngine/plane.cpp
 
 transform.o: ../TP4/physicEngine/transform.cpp ../TP4/physicEngine/transform.h
@@ -572,6 +585,7 @@ mainwidget.o: ../TP4/physicEngine/mainwidget.cpp ../TP4/physicEngine/mainwidget.
 		../TP4/physicEngine/physicobject.h \
 		../TP4/physicEngine/BoundingSphere.h \
 		../TP4/physicEngine/intersectdata.h \
+		../TP4/physicEngine/collider.h \
 		../TP4/physicEngine/physicsengine.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwidget.o ../TP4/physicEngine/mainwidget.cpp
 
