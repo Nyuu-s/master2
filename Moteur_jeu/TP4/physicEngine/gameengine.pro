@@ -4,17 +4,17 @@ TARGET = gameengine
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    BoundingSphere.cpp \
-    aabb.cpp \
     camera.cpp \
-    collider.cpp \
     gameObject.cpp \
     graph.cpp \
-    intersectdata.cpp \
     mesh.cpp \
-    physicobject.cpp \
-    physicsengine.cpp \
-    plane.cpp \
+    physics/BoundingSphere.cpp \
+    physics/aabb.cpp \
+    physics/collider.cpp \
+    physics/intersectdata.cpp \
+    physics/physicobject.cpp \
+    physics/physicsengine.cpp \
+    physics/plane.cpp \
     transform.cpp
 
 SOURCES += \
@@ -23,21 +23,21 @@ SOURCES += \
 
 HEADERS += \
     BasicIO.hpp \
-    BoundingSphere.h \
     ReferenceCounter.h \
-    aabb.h \
     camera.h \
-    collider.h \
     componnent.h \
     gameObject.h \
     graph.h \
-    intersectdata.h \
     mainwidget.h \
     geometryengine.h \
     mesh.h \
-    physicobject.h \
-    physicsengine.h \
-    plane.h \
+    physics/BoundingSphere.h \
+    physics/aabb.h \
+    physics/collider.h \
+    physics/intersectdata.h \
+    physics/physicobject.h \
+    physics/physicsengine.h \
+    physics/plane.h \
     transform.h
 
 RESOURCES += \
