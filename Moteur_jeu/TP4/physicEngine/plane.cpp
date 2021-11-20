@@ -9,5 +9,5 @@ IntersectData Plane::intersectSphere(const BoundingSphere& sphere){
 
     float distFromSphereCenter = fabs(QVector3D::dotProduct(sphere.getCenter(), m_normal) + m_distance);
     float distanceFromSphere = distFromSphereCenter - sphere.getRadius();
-    return IntersectData(distanceFromSphere < 0 , distanceFromSphere);
+    return IntersectData(distanceFromSphere < 0 , m_normal * distanceFromSphere);
 };

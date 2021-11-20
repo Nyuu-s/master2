@@ -8,26 +8,28 @@
 class PhysicObject
 {
 public:
-    PhysicObject(const QVector3D& position, const QVector3D& velocity, float radius) :
-     m_position(position),
-     m_oldPosition(position),
+    PhysicObject(Collider* collider,  const QVector3D& velocity) :
+     m_position(collider->getCenter()),
+     m_oldPosition(collider->getCenter()),
      m_velocity(velocity),
-     m_radius(radius),
-     m_boundingSphere(position, radius)
+     m_collider(collider)
     {};
+
+    PhysicObject(const PhysicObject& other);
+    virtual ~PhysicObject();
 
 
     void Intergrate(float delta);
 
     inline const QVector3D getPosition() const { return m_position;}
     inline const QVector3D getVelocity() const { return m_velocity;}
-    inline  float getRadius() const { return m_radius;}
-    inline const Collider& getBoundingSphere() {
+
+    inline const Collider& getCollider() {
         QVector3D translation = m_position - m_oldPosition;
         m_oldPosition = m_position;
-        m_boundingSphere.Transform(translation);
+        m_collider->Transform(translation);
 
-        return m_boundingSphere;
+        return *m_collider;
     }
     inline void setVelocity(QVector3D vel){
         m_velocity = vel;
@@ -36,8 +38,8 @@ private:
     QVector3D m_position;
     QVector3D m_oldPosition;
     QVector3D m_velocity;
-    float m_radius;
-    BoundingSphere m_boundingSphere;
+
+    Collider* m_collider;
 };
 
 #endif // PHYSICOBJECT_H

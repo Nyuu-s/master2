@@ -1,9 +1,10 @@
 #ifndef COLLIDER_H
 #define COLLIDER_H
 
-#include "intersectdata.h"
 #include <QVector3D>
-class Collider
+#include "ReferenceCounter.h"
+#include "intersectdata.h"
+class Collider : public ReferenceCounter
 {
 public:
     enum
@@ -15,6 +16,7 @@ public:
          TYPE_SIZE
     };
     Collider(int type):
+        ReferenceCounter(),
         m_type(type)
     {};
 
@@ -22,6 +24,7 @@ public:
 
     IntersectData Intersect(const Collider& other) const;
     virtual void Transform(const QVector3D& translation){};
+    inline virtual QVector3D getCenter() const {return QVector3D();}
 
 private:
     int m_type;

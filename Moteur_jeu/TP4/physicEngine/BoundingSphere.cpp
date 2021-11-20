@@ -2,9 +2,13 @@
 
 IntersectData BoundingSphere::instersectBoundingSphere(const BoundingSphere& other){
     float radiusDistance = m_radius + other.getRadius();
-    float centerDistance = (other.getCenter()- m_center).length();
+
+    QVector3D direction = (other.getCenter()- m_center);
+    float centerDistance = direction.length();
+    direction /= centerDistance; // normalize direction
+
     float distance = centerDistance - radiusDistance;
-    return IntersectData(centerDistance < radiusDistance, distance );
+    return IntersectData(centerDistance < radiusDistance, direction * distance );
 }
 
 

@@ -81,7 +81,7 @@ void MainWidget::initGraph(int nb_mesh){
 
 
     geometries = new GeometryEngine;
-    Meteor = new gameObject(Transform(QQuaternion(), QVector3D(0,15,0), 1), 1, 1, 999, "meteor");
+    Meteor = new gameObject(Transform(QQuaternion(), QVector3D(3,15,0), 1), 1, 1, 999, "meteor");
 
     World               =    new    gameObject(Transform(), 1, 1, 0, "world");
     SolarSystem         =    new    gameObject(Transform(QQuaternion(), QVector3D(0,0,0), 1),9,9, 1,   "systeme solaire");
@@ -98,8 +98,8 @@ void MainWidget::initGraph(int nb_mesh){
 
 
     physics = new PhysicsEngine;
-    physics->AddObject(PhysicObject(Meteor->transform.position, QVector3D(0.0,-0.01,0.0), 1.0)); // meteor
-    physics->AddObject(PhysicObject(Soleil->transform.position, QVector3D(0.0,0.0,0.0), Soleil->transform.scale)); // soleil
+    physics->AddObject(PhysicObject(new BoundingSphere(Meteor->transform.position, 1.0), QVector3D(0.0,-0.01,0.0))); // meteor
+    physics->AddObject(PhysicObject(new BoundingSphere(Soleil->transform.position, Soleil->transform.scale), QVector3D())); // soleil
 
 
     std::vector<VertexData> v;
@@ -412,6 +412,8 @@ void MainWidget::paintGL()
 //    program.setUniformValue("heightmap", 1);
    // qDebug() << graphScene->root->id << " " << graphScene->root->name.c_str();
    Meteor->transform.position += physics->getObject(0).getVelocity();
+   //Soleil->transform.position += physics->getObject(1).getVelocity();
+   SolarSystem->transform.position += physics->getObject(1).getVelocity();
    physics->getObject(0).Intergrate(1.0);
 
 

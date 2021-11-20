@@ -22,10 +22,15 @@ void PhysicsEngine::Simulate(float delta)
 void PhysicsEngine::HandleCollisions(){
     for(unsigned int i=0; i<m_objects.size(); i++){
         for(unsigned int j=i+1; j<m_objects.size(); j++){
-            IntersectData intersect = m_objects[i].getBoundingSphere().Intersect(m_objects[j].getBoundingSphere());
+            IntersectData intersect = m_objects[i].getCollider().Intersect(m_objects[j].getCollider());
             if(intersect.IsIntersect()){
-                m_objects[i].setVelocity(m_objects[i].getVelocity() * -1);
-                m_objects[j].setVelocity(m_objects[j].getVelocity() * -1);
+
+                QVector3D direction = intersect.getDirection().normalized();
+                QVector3D velocity1 = m_objects[i].getVelocity();
+                //QVector3D velocity2 = m_objects[j].getVelocity();
+                QVector3D reflection = velocity1 - (direction * (QVector3D::dotProduct(velocity1, direction) * 2));
+                m_objects[i].setVelocity(reflection);
+                m_objects[j].setVelocity(reflection * -1);
             }
         }
     }

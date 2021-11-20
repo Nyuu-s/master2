@@ -24,6 +24,7 @@ SOURCES += \
 HEADERS += \
     BasicIO.hpp \
     BoundingSphere.h \
+    ReferenceCounter.h \
     aabb.h \
     camera.h \
     collider.h \

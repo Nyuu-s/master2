@@ -8,5 +8,5 @@ IntersectData AABB::IntersectAABB(const AABB& other){
 
     float maxDistance = Transform::VecMaxValue(distances);
 
-    return IntersectData(maxDistance < 0, maxDistance);
+    return IntersectData(maxDistance < 0, distances);
 }

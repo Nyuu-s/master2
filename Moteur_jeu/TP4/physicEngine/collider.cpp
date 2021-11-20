@@ -12,7 +12,7 @@ IntersectData Collider::Intersect(const Collider& other) const
 
     std::cout << "error";
     exit(1);
-    return IntersectData(false, 0);
+    return IntersectData(false, QVector3D());
 }
 
 
