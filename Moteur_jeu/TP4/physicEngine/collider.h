@@ -2,7 +2,7 @@
 #define COLLIDER_H
 
 #include "intersectdata.h"
-
+#include <QVector3D>
 class Collider
 {
 public:
@@ -20,7 +20,8 @@ public:
 
     inline int getType() const {return m_type;}
 
-    IntersectData Intersect(const Collider& other);
+    IntersectData Intersect(const Collider& other) const;
+    virtual void Transform(const QVector3D& translation){};
 
 private:
     int m_type;

@@ -6,3 +6,8 @@ IntersectData BoundingSphere::instersectBoundingSphere(const BoundingSphere& oth
     float distance = centerDistance - radiusDistance;
     return IntersectData(centerDistance < radiusDistance, distance );
 }
+
+
+void BoundingSphere::Transform(const QVector3D& translation){
+    m_center += translation;
+};
